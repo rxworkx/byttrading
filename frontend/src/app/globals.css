@@ -1,0 +1,282 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* BYT Trading brand tokens */
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-emerald: var(--brand-emerald);
+  --color-status-good: var(--status-good);
+  --color-status-warning: var(--status-warning);
+  --color-status-critical: var(--status-critical);
+  --color-hairline: var(--hairline);
+}
+
+/* Dark fintech theme is the only theme — the mockups are dark-only. */
+:root,
+.dark {
+  --background: #0a0e11;
+  --foreground: #f5f7f8;
+  --card: #10151a;
+  --card-foreground: #f5f7f8;
+  --popover: #10151a;
+  --popover-foreground: #f5f7f8;
+  --primary: #14b8a6;
+  --primary-foreground: #04120f;
+  --secondary: #161c22;
+  --secondary-foreground: #f5f7f8;
+  --muted: #161c22;
+  --muted-foreground: #9aa5ab;
+  --accent: #10b981;
+  --accent-foreground: #04120f;
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #14b8a6;
+  --chart-1: #14b8a6;
+  --chart-2: #10b981;
+  --chart-3: #5eead4;
+  --chart-4: #34d399;
+  --chart-5: #99f6e4;
+  --radius: 0.75rem;
+  --sidebar: #10151a;
+  --sidebar-foreground: #f5f7f8;
+  --sidebar-primary: #14b8a6;
+  --sidebar-primary-foreground: #04120f;
+  --sidebar-accent: #161c22;
+  --sidebar-accent-foreground: #f5f7f8;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #14b8a6;
+
+  --surface: #10151a;
+  --surface-raised: #161c22;
+  --brand-teal: #14b8a6;
+  --brand-emerald: #10b981;
+  --status-good: #22c55e;
+  --status-warning: #f59e0b;
+  --status-critical: #ef4444;
+  --hairline: rgba(255, 255, 255, 0.08);
+
+  /* Light-toned counterpart used to break up long dark marketing pages: pure
+     white sections, with cards also white and separated by shadow rather
+     than a gray fill (a gray card on a white section read as dull/flat). */
+  --surface-light: #ffffff;
+  --surface-light-raised: #ffffff;
+  --surface-light-foreground: #0b1512;
+  --surface-light-muted: #4b5a56;
+  --surface-light-hairline: rgba(11, 21, 18, 0.08);
+}
+
+/* Admin panel runs its own white/black theme, independent of the dark
+   fintech theme used everywhere else on the site. Applied by toggling this
+   class on <html> (see AdminShell), not nested under a content div, so
+   portaled content (dialogs, popovers, toasts) inherits it too. Status
+   colors (good/warning/critical) and --destructive are deliberately left
+   unset here so they keep inheriting their normal values, they're
+   functional indicators, not brand identity. */
+.admin-theme {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  /* No gray fills anywhere, per explicit repeated instruction: secondary
+     buttons, badges, skeleton loaders, tab tracks — all white, with a box
+     shadow or black active-state instead of a gray background. */
+  --secondary: #ffffff;
+  --secondary-foreground: #000000;
+  --muted: #ffffff;
+  --muted-foreground: #6b7280;
+  --accent: #000000;
+  --accent-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  /* Same faint border as everything else, not solid black — inputs should
+     match the rest of the UI's hairline, not stand out as heavier. */
+  --input: rgba(0, 0, 0, 0.1);
+  --ring: #000000;
+  --chart-1: #000000;
+  --chart-2: #404040;
+  --chart-3: #737373;
+  --chart-4: #a3a3a3;
+  --chart-5: #d4d4d4;
+
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --brand-teal: #000000;
+  --brand-emerald: #000000;
+  --hairline: rgba(0, 0, 0, 0.1);
+}
+
+/* Outline-variant buttons specifically (e.g. "View all transactions",
+   "Save", "Funds"/"Email") stay white but read via a box shadow instead of
+   the faint border everything else uses — a button you click should look
+   crisp and lifted, not outlined in gray. Cards/tables/dividers deliberately
+   keep the subtle border above; this is scoped to buttons only via the
+   data-variant attribute Button sets. */
+.admin-theme [data-slot="button"][data-variant="outline"] {
+  border-color: transparent;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* Disabled default (black) buttons — e.g. Save/Send before anything has
+   changed — must still read as solid black, not the library's default
+   disabled:opacity-50 washing it down to gray. The disabled affordance
+   comes from pointer-events-none/cursor alone here, per the same
+   no-gray-anywhere rule applied to skeletons and tabs below. */
+.admin-theme [data-slot="button"][data-variant="default"]:disabled {
+  opacity: 1;
+}
+
+/* Loading placeholders: white with a shadow, not a gray pulse — --muted is
+   white now, so this just adds the shadow that makes a white-on-white
+   shape still readable while the pulse animation runs. */
+.admin-theme [data-slot="skeleton"] {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabs (e.g. the Overview/Transactions/Trades/Profit row on the dashboard
+   chart): track is white (via --muted above), active tab is black instead
+   of the library default (white-on-white distinguished only by a shadow). */
+.admin-theme [data-slot="tabs-trigger"][data-active] {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* The admin sidebar is a separate pure-black panel, not just another card on
+   the white content area. Rather than chase every className that touches
+   it, this redeclares the same base tokens (background/foreground/
+   primary/secondary/muted/accent/border) a second time, scoped to the
+   sidebar's own subtree, so every shared component already using those
+   tokens (nav links, ghost buttons, badges) inverts correctly for free.
+   Applied via the "admin-sidebar" class on <aside> in AdminShell. */
+.admin-theme .admin-sidebar {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: rgba(255, 255, 255, 0.08);
+  --secondary-foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.08);
+  --muted-foreground: rgba(255, 255, 255, 0.6);
+  --accent: rgba(255, 255, 255, 0.08);
+  --accent-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #ffffff;
+  --surface: #000000;
+  --surface-raised: #0a0a0a;
+  --hairline: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .brand-gradient {
+    background-image: linear-gradient(135deg, #0f766e, #10b981);
+  }
+  .brand-gradient-text {
+    background-image: linear-gradient(135deg, #2dd4bf, #34d399);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Same primary-action gradient, retinted black/gray for the admin panel's
+     white/black theme instead of the site's teal/emerald brand gradient. */
+  .admin-theme .brand-gradient {
+    background-image: linear-gradient(135deg, #000000, #1a1a1a);
+  }
+  .admin-theme .brand-gradient-text {
+    background-image: linear-gradient(135deg, #000000, #1a1a1a);
+  }
+  .text-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Sets the default text color for the section; headings/paragraphs pick it
+     up via normal inheritance, which (unlike an element selector) still lets
+     an explicit utility class on a specific child (e.g. text-white on a
+     nested gradient card) win without a specificity fight. */
+  .section-light {
+    background-color: var(--surface-light);
+    color: var(--surface-light-foreground);
+  }
+  .section-light .section-light-muted {
+    color: var(--surface-light-muted);
+  }
+  .section-light .section-light-card {
+    background-color: var(--surface-light-raised);
+    border-color: var(--surface-light-hairline);
+    box-shadow:
+      0 1px 2px rgba(11, 21, 18, 0.04),
+      0 12px 28px rgba(11, 21, 18, 0.07);
+  }
+  .section-light .section-light-hairline {
+    border-color: var(--surface-light-hairline);
+  }
+}
