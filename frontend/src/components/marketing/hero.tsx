@@ -51,10 +51,10 @@ export function Hero() {
             published rate ranges. A demonstrated track record of performance, visible the moment each
             cycle completes.
           </p>
-          <div className="mt-8 flex flex-nowrap gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-nowrap">
             <Button
               nativeButton={false}
-              className="h-10 gap-1.5 rounded-xl px-4 text-sm sm:h-11 sm:px-5 sm:text-base lg:h-12 lg:px-6 lg:text-base brand-gradient text-primary-foreground hover:opacity-90"
+              className="h-14 w-full gap-1.5 rounded-xl px-4 text-base font-semibold sm:h-11 sm:w-auto sm:px-5 sm:text-base lg:h-12 lg:px-6 brand-gradient text-primary-foreground hover:opacity-90"
               render={
                 <Link href="/signup">
                   Get started <ArrowRight className="size-4" />
@@ -64,7 +64,7 @@ export function Hero() {
             <Button
               variant="outline"
               nativeButton={false}
-              className="h-10 gap-1.5 rounded-xl px-4 text-sm sm:h-11 sm:px-5 sm:text-base lg:h-12 lg:px-6 lg:text-base"
+              className="h-14 w-full gap-1.5 rounded-xl px-4 text-base font-semibold sm:h-11 sm:w-auto sm:px-5 sm:text-base lg:h-12 lg:px-6"
               render={
                 <Link href="/plans">
                   <TrendingUp className="size-4" /> View trading bots
@@ -224,7 +224,7 @@ function TradeDashboardMockup() {
           (executing), then loops back to Home. */}
       <div className="absolute right-0 bottom-0 flex h-[30rem] w-[15.5rem] flex-col overflow-hidden rounded-3xl border-4 border-background bg-card p-4 pt-6 shadow-2xl">
         <Notch />
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence initial={false}>
           {phase === "home" ? (
             <motion.div
               key="home"
@@ -232,7 +232,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="flex flex-1 flex-col"
+              className="absolute inset-0 flex flex-col"
             >
               <div className="flex items-center justify-between">
                 <span className="flex size-8 items-center justify-center rounded-full brand-gradient text-xs font-semibold text-background">
@@ -299,7 +299,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="flex flex-1 flex-col"
+              className="absolute inset-0 flex flex-col"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ArrowLeft className="size-4 text-muted-foreground" />
@@ -339,7 +339,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="flex flex-1 flex-col"
+              className="absolute inset-0 flex flex-col"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ArrowLeft className="size-4 text-muted-foreground" />
@@ -372,7 +372,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="flex flex-1 flex-col"
+              className="absolute inset-0 flex flex-col"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ArrowLeft className="size-4 text-muted-foreground" />
