@@ -61,7 +61,7 @@ export class AuthController {
       // require Secure whenever SameSite=None, which is why this is tied
       // to isProd rather than a separate flag.
       secure: isProd,
-      sameSite: (isProd ? 'none' : 'lax') as const,
+      sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
       domain,
       path: '/',
     };
