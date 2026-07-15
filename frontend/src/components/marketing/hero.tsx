@@ -222,7 +222,7 @@ function TradeDashboardMockup() {
           background panel. Its whole body (below the notch) swaps between
           four screens: Home -> Choose a bot -> Select amount -> Trade list
           (executing), then loops back to Home. */}
-      <div className="absolute right-0 bottom-0 flex h-[30rem] w-[15.5rem] flex-col overflow-hidden rounded-3xl border-4 border-background bg-card p-4 pt-6 shadow-2xl">
+      <div className="absolute right-0 bottom-0 flex h-[30rem] w-[15.5rem] flex-col overflow-hidden rounded-3xl border-4 border-background bg-card shadow-2xl">
         <Notch />
         <AnimatePresence initial={false}>
           {phase === "home" ? (
@@ -232,7 +232,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="absolute inset-0 flex flex-col"
+              className="absolute inset-0 flex flex-col p-4 pt-6"
             >
               <div className="flex items-center justify-between">
                 <span className="flex size-8 items-center justify-center rounded-full brand-gradient text-xs font-semibold text-background">
@@ -299,7 +299,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="absolute inset-0 flex flex-col"
+              className="absolute inset-0 flex flex-col p-4 pt-6"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ArrowLeft className="size-4 text-muted-foreground" />
@@ -339,7 +339,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="absolute inset-0 flex flex-col"
+              className="absolute inset-0 flex flex-col p-4 pt-6"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ArrowLeft className="size-4 text-muted-foreground" />
@@ -372,7 +372,7 @@ function TradeDashboardMockup() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
-              className="absolute inset-0 flex flex-col"
+              className="absolute inset-0 flex flex-col p-4 pt-6"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ArrowLeft className="size-4 text-muted-foreground" />
