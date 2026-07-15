@@ -24,8 +24,12 @@ import { DatabaseKeepAliveService } from './database-keep-alive.service';
         // first query after any quiet period pay a multi-second reconnect
         // cost. Keep a small pool warm and let DatabaseKeepAliveService ping
         // it periodically so most requests hit an already-open connection.
+        // Kept well under Supabase's project-wide session-mode pool_size
+        // ceiling (15 on the free tier) so a restart (old instance's
+        // connections not yet released, new instance opening a fresh batch)
+        // can't exhaust it and crash-loop on EMAXCONNSESSION.
         extra: {
-          max: 10,
+          max: 5,
           keepAlive: true,
           idleTimeoutMillis: 60_000,
           connectionTimeoutMillis: 10_000,

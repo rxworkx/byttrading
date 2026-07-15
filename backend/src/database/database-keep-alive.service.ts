@@ -7,7 +7,7 @@ const KEEP_ALIVE_INTERVAL_MS = 20_000;
 // Must match (or exceed) database.module.ts's pool `max`, otherwise a single
 // sequential ping only ever touches one connection and the rest of the pool
 // goes stale between real requests, silently dropped by the Supabase pooler.
-const POOL_SIZE = 10;
+const POOL_SIZE = 5;
 
 // Pings every connection in the pool concurrently on a fixed interval so the
 // Supabase connection pooler never sees any of them go idle long enough to
