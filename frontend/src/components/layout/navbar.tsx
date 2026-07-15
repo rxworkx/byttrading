@@ -13,9 +13,10 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  // undefined = still checking, so we don't flash "Login" before a real
-  // session is confirmed one way or the other.
-  const [user, setUser] = useState<PublicUser | null | undefined>(undefined);
+  // Starts logged-out so Login/Sign up render immediately, same as the
+  // hero's "Get started" button, instead of waiting on a round trip to the
+  // backend first. Swaps to "Dashboard" if getMe() later confirms a session.
+  const [user, setUser] = useState<PublicUser | null>(null);
 
   useEffect(() => {
     function onScroll() {
@@ -60,7 +61,7 @@ export function Navbar() {
               className="brand-gradient text-background hover:opacity-90"
               render={<Link href="/dashboard">Dashboard</Link>}
             />
-          ) : user === null ? (
+          ) : (
             <>
               <Button variant="ghost" size="lg" nativeButton={false} render={<Link href="/login">Login</Link>} />
               <Button
@@ -70,7 +71,7 @@ export function Navbar() {
                 render={<Link href="/signup">Sign up</Link>}
               />
             </>
-          ) : null}
+          )}
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -110,7 +111,7 @@ export function Navbar() {
                       </Link>
                     }
                   />
-                ) : user === null ? (
+                ) : (
                   <>
                     <Button
                       variant="outline"
@@ -133,7 +134,7 @@ export function Navbar() {
                       }
                     />
                   </>
-                ) : null}
+                )}
               </div>
             </nav>
           </SheetContent>
