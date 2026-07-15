@@ -11,7 +11,12 @@ import { DatabaseKeepAliveService } from './database-keep-alive.service';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        url: config.get<string>('DATABASE_URL'),
+        // Transaction mode, not session mode: see DATABASE_POOL_URL's
+        // comment in env.validation.ts for why the running app uses a
+        // different connection string than migrations do.
+        url:
+          config.get<string>('DATABASE_POOL_URL') ??
+          config.get<string>('DATABASE_URL'),
         entities: entityList,
         ssl: { rejectUnauthorized: false },
         synchronize: false,
@@ -24,10 +29,6 @@ import { DatabaseKeepAliveService } from './database-keep-alive.service';
         // first query after any quiet period pay a multi-second reconnect
         // cost. Keep a small pool warm and let DatabaseKeepAliveService ping
         // it periodically so most requests hit an already-open connection.
-        // Kept well under Supabase's project-wide session-mode pool_size
-        // ceiling (15 on the free tier) so a restart (old instance's
-        // connections not yet released, new instance opening a fresh batch)
-        // can't exhaust it and crash-loop on EMAXCONNSESSION.
         extra: {
           max: 5,
           keepAlive: true,
