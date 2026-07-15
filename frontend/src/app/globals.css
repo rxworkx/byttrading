@@ -58,50 +58,53 @@
   --color-hairline: var(--hairline);
 }
 
-/* Dark fintech theme is the only theme — the mockups are dark-only. */
+/* Dark fintech theme is the only theme — the mockups are dark-only.
+   Navy/cyan palette (swapped from the earlier near-black/teal-emerald one)
+   to match the reference hero design: a deep blue-navy base instead of
+   near-black, with a brighter cyan-teal accent instead of teal-to-emerald. */
 :root,
 .dark {
-  --background: #0a0e11;
-  --foreground: #f5f7f8;
-  --card: #10151a;
-  --card-foreground: #f5f7f8;
-  --popover: #10151a;
-  --popover-foreground: #f5f7f8;
-  --primary: #14b8a6;
-  --primary-foreground: #04120f;
-  --secondary: #161c22;
-  --secondary-foreground: #f5f7f8;
-  --muted: #161c22;
-  --muted-foreground: #9aa5ab;
-  --accent: #10b981;
-  --accent-foreground: #04120f;
+  --background: #0a1628;
+  --foreground: #f1f5f9;
+  --card: #101f36;
+  --card-foreground: #f1f5f9;
+  --popover: #101f36;
+  --popover-foreground: #f1f5f9;
+  --primary: #2dd4bf;
+  --primary-foreground: #04141a;
+  --secondary: #14233c;
+  --secondary-foreground: #f1f5f9;
+  --muted: #14233c;
+  --muted-foreground: #8fa3b8;
+  --accent: #38bdf8;
+  --accent-foreground: #04141a;
   --destructive: #ef4444;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.1);
-  --ring: #14b8a6;
-  --chart-1: #14b8a6;
-  --chart-2: #10b981;
+  --border: rgba(148, 197, 255, 0.1);
+  --input: rgba(148, 197, 255, 0.12);
+  --ring: #2dd4bf;
+  --chart-1: #2dd4bf;
+  --chart-2: #38bdf8;
   --chart-3: #5eead4;
-  --chart-4: #34d399;
+  --chart-4: #7dd3fc;
   --chart-5: #99f6e4;
   --radius: 0.75rem;
-  --sidebar: #10151a;
-  --sidebar-foreground: #f5f7f8;
-  --sidebar-primary: #14b8a6;
-  --sidebar-primary-foreground: #04120f;
-  --sidebar-accent: #161c22;
-  --sidebar-accent-foreground: #f5f7f8;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #14b8a6;
+  --sidebar: #101f36;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #2dd4bf;
+  --sidebar-primary-foreground: #04141a;
+  --sidebar-accent: #14233c;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: rgba(148, 197, 255, 0.1);
+  --sidebar-ring: #2dd4bf;
 
-  --surface: #10151a;
-  --surface-raised: #161c22;
-  --brand-teal: #14b8a6;
-  --brand-emerald: #10b981;
+  --surface: #101f36;
+  --surface-raised: #14263f;
+  --brand-teal: #2dd4bf;
+  --brand-emerald: #38bdf8;
   --status-good: #22c55e;
   --status-warning: #f59e0b;
   --status-critical: #ef4444;
-  --hairline: rgba(255, 255, 255, 0.08);
+  --hairline: rgba(148, 197, 255, 0.1);
 
   /* Light-toned counterpart used to break up long dark marketing pages: pure
      white sections, with cards also white and separated by shadow rather
@@ -239,10 +242,10 @@
 
 @layer utilities {
   .brand-gradient {
-    background-image: linear-gradient(135deg, #0f766e, #10b981);
+    background-image: linear-gradient(90deg, #2db4c0, #52c9a5);
   }
   .brand-gradient-text {
-    background-image: linear-gradient(135deg, #2dd4bf, #34d399);
+    background-image: linear-gradient(90deg, #2db4c0, #52c9a5);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -265,6 +268,14 @@
   .section-light {
     background-color: var(--surface-light);
     color: var(--surface-light-foreground);
+    /* The dark theme's --primary (#2dd4bf) is a bright, light teal tuned to
+       read against the near-black background elsewhere on the site; at the
+       same lightness it washes out to a dull pastel on white (bg-primary/10
+       chips, text-primary labels/icons). Light sections get a darker, more
+       saturated teal instead so those same utility classes stay legible
+       here without every component needing a section-aware color prop. */
+    --primary: #0d9488;
+    --primary-foreground: #ffffff;
   }
   .section-light .section-light-muted {
     color: var(--surface-light-muted);

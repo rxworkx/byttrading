@@ -61,7 +61,7 @@ function PlanCard({ plan, onSaved }: { plan: InvestmentPlan; onSaved: () => void
           <Input id={`${plan.id}-rate`} value={rateRange} onChange={(e) => setRateRange(e.target.value)} placeholder="0.25-0.6" />
         </Field>
         <Field>
-          <FieldLabel htmlFor={`${plan.id}-cycle`}>Term, e.g. "5 days" (blank = no fixed cycle)</FieldLabel>
+          <FieldLabel htmlFor={`${plan.id}-cycle`}>Term, e.g. &quot;5 days&quot; (blank = no fixed cycle)</FieldLabel>
           <Input
             id={`${plan.id}-cycle`}
             value={term}
@@ -78,7 +78,7 @@ function PlanCard({ plan, onSaved }: { plan: InvestmentPlan; onSaved: () => void
           <Input id={`${plan.id}-1yr`} inputMode="decimal" value={oneYr} onChange={(e) => setOneYr(e.target.value)} />
         </Field>
         <Field>
-          <FieldLabel htmlFor={`${plan.id}-freq`}>Pay frequency, e.g. "1 day"</FieldLabel>
+          <FieldLabel htmlFor={`${plan.id}-freq`}>Pay frequency, e.g. &quot;1 day&quot;</FieldLabel>
           <Input
             id={`${plan.id}-freq`}
             value={payFrequency}
@@ -86,7 +86,7 @@ function PlanCard({ plan, onSaved }: { plan: InvestmentPlan; onSaved: () => void
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor={`${plan.id}-hold`}>Minimum term, e.g. "0 days"</FieldLabel>
+          <FieldLabel htmlFor={`${plan.id}-hold`}>Minimum term, e.g. &quot;0 days&quot;</FieldLabel>
           <Input id={`${plan.id}-hold`} value={minTerm} onChange={(e) => setMinTerm(e.target.value)} />
         </Field>
         <Field>

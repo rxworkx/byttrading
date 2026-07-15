@@ -35,7 +35,6 @@ function TradingContent() {
   const searchParams = useSearchParams();
   const [subscriptions, setSubscriptions] = useState<Subscription[] | null>(null);
   const [investments, setInvestments] = useState<Investment[]>([]);
-  const [investmentsLoaded, setInvestmentsLoaded] = useState(false);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [search, setSearch] = useState("");
@@ -46,7 +45,12 @@ function TradingContent() {
     subscriptionsApi.mine().then(setSubscriptions);
     investmentsApi.mine().then((data) => {
       setInvestments(data);
-      setInvestmentsLoaded(true);
+      // Nothing running yet means there's nothing to look at below, so the
+      // place-a-trade section should already be open instead of making a new
+      // user hunt for the "Add trade" button.
+      if (data.length === 0) {
+        setShowPlaceTrade(true);
+      }
     });
     walletsApi.list().then(setWallets);
   }, []);
@@ -55,18 +59,15 @@ function TradingContent() {
     load();
   }, [load]);
 
-  // Nothing running yet means there's nothing to look at below, so the
-  // place-a-trade section should already be open instead of making a new
-  // user hunt for the "Add trade" button.
-  useEffect(() => {
-    if (investmentsLoaded && investments.length === 0) {
-      setShowPlaceTrade(true);
-    }
-  }, [investmentsLoaded, investments.length]);
-
-  useEffect(() => {
+  // Resets to page 1 whenever the filter/search changes, without a
+  // dedicated effect: comparing against the previous filters during render
+  // and adjusting state is the pattern React recommends over syncing state
+  // via useEffect for this case.
+  const [prevFilters, setPrevFilters] = useState({ statusFilter, search });
+  if (prevFilters.statusFilter !== statusFilter || prevFilters.search !== search) {
+    setPrevFilters({ statusFilter, search });
     setPage(1);
-  }, [statusFilter, search]);
+  }
 
   const activeSubscriptions = (subscriptions ?? [])
     .filter((s) => new Date(s.expiresAt) > new Date())

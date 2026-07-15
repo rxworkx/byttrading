@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+// The reference site doesn't load a custom web font at all, it just falls
+// through to the OS system font stack, so no next/font/google import here.
+const systemSansStack =
+  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"';
 
 export const metadata: Metadata = {
   title: "BYT Trading | AI Trading Bots for Crypto Investors",
@@ -28,8 +28,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
-      style={{ ["--font-sans" as string]: "var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif" }}
+      className={`${geistMono.variable} dark h-full antialiased`}
+      style={{ ["--font-sans" as string]: systemSansStack }}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <TooltipProvider>

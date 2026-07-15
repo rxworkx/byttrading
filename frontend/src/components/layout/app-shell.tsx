@@ -39,7 +39,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop sidebar: the primary account navigation */}
-      <aside className="hidden w-72 shrink-0 flex-col border-r border-hairline bg-surface md:flex">
+      <aside className="hidden w-72 shrink-0 flex-col border-r border-hairline bg-[#071120] md:flex">
         <div className="px-5 py-6">
           <Logo size="sm" />
         </div>

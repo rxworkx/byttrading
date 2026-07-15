@@ -15,6 +15,7 @@ export function Logo({
   size = "md",
   className,
   wordmarkClassName = "text-white",
+  wordmark = true,
 }: {
   href?: string | null;
   size?: keyof typeof sizes;
@@ -24,6 +25,9 @@ export function Logo({
   // "text-foreground" instead, which resolves black there and white in its
   // own black sidebar scope.
   wordmarkClassName?: string;
+  // The navbar (matching the icon-only nav mark in the reference design)
+  // passes false to render just the mark image, no "BYT Trading" text.
+  wordmark?: boolean;
 }) {
   const height = sizes[size].height;
 
@@ -37,10 +41,12 @@ export function Logo({
         className="shrink-0"
         priority
       />
-      <span className={cn("inline-flex items-baseline gap-1.5", wordmarkClassName)}>
-        <span className={cn(sizes[size].byt)}>BYT</span>
-        <span className={cn(sizes[size].word)}>Trading</span>
-      </span>
+      {wordmark ? (
+        <span className={cn("inline-flex items-baseline gap-1.5", wordmarkClassName)}>
+          <span className={cn(sizes[size].byt)}>BYT</span>
+          <span className={cn(sizes[size].word)}>Trading</span>
+        </span>
+      ) : null}
     </span>
   );
 

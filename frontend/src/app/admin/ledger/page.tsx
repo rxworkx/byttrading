@@ -65,7 +65,6 @@ function LedgerContent() {
   );
 
   const load = useCallback(() => {
-    setTransactions(null);
     adminLedgerApi.list({ type, status: status === "ALL" ? undefined : status, userId }).then(setTransactions);
   }, [type, status, userId]);
 

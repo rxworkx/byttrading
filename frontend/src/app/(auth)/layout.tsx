@@ -23,11 +23,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="grid min-h-screen grid-cols-1 bg-background lg:grid-cols-2">
       <div className="flex flex-col justify-center px-6 py-16 sm:px-12 md:px-20 lg:px-16 xl:px-24">
-        <Logo size="lg" className="mb-10" />
+        <Logo size="lg" className="mb-10 lg:hidden" />
         <div className="w-full max-w-lg">{children}</div>
       </div>
 
-      <div className="relative hidden overflow-hidden bg-surface lg:flex lg:flex-col lg:justify-between lg:p-16 xl:p-20">
+      <div className="relative hidden overflow-hidden bg-surface lg:flex lg:flex-col lg:justify-center lg:gap-8 lg:p-16 xl:p-20">
         <div
           className="absolute inset-0 opacity-50"
           style={{
@@ -40,6 +40,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             Put your capital to work with bots that trade{" "}
             <span className="brand-gradient-text">while you sleep.</span>
           </p>
+        </div>
+
+        <div className="relative">
+          <Logo size="lg" />
         </div>
 
         <div className="relative space-y-8">

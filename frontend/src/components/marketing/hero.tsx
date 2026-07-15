@@ -3,441 +3,456 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Bot, Home, Receipt, Sparkles, TrendingUp, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bell, Bot, Sparkles, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const stats = [
-  { label: "Active Trading Bots", value: "3" },
-  { label: "Cycle Length Range", value: "7 to 21 days" },
-  { label: "Company Registration", value: "ABN Verified" },
+  { value: "3", label: "Active Trading Bots" },
+  { value: "<50ms", label: "Prediction Latency" },
+  { value: "20+", label: "Trades Per Day" },
 ];
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      {/* CSS/SVG background: dark gradient + circuit/candlestick motif */}
+    <section className="relative -mt-[86px] overflow-hidden border-b border-hairline">
       <div className="absolute inset-0 -z-10 bg-background">
         <div
-          className="absolute inset-0 opacity-40"
+          className="absolute inset-0 opacity-50"
           style={{
             backgroundImage:
-              "radial-gradient(60% 50% at 15% 10%, rgba(20,184,166,0.25), transparent 60%), radial-gradient(50% 40% at 90% 20%, rgba(16,185,129,0.18), transparent 60%)",
+              "radial-gradient(50% 40% at 30% 22%, rgba(45,212,191,0.22), transparent 60%), radial-gradient(45% 35% at 92% 15%, rgba(56,189,248,0.16), transparent 60%)",
           }}
         />
-        <svg
-          className="absolute inset-0 h-full w-full opacity-[0.15]"
-          aria-hidden
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="absolute inset-0 h-full w-full opacity-[0.08]" aria-hidden xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-              <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#14b8a6" strokeWidth="0.5" />
+              <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#2dd4bf" strokeWidth="0.5" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
-        <CandlestickMotif />
       </div>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 pt-16 pb-24 sm:px-6 lg:grid-cols-2 lg:px-8 lg:pt-10 lg:pb-24">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 pt-[150px] pb-24 sm:px-6 lg:grid-cols-2 lg:px-8 lg:pt-[126px] lg:pb-24">
         <div className="lg:mt-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface px-4 py-1.5 text-sm text-muted-foreground">
-            <Sparkles className="size-4 text-primary" />
+          <div className="inline-flex h-9 items-center gap-2 rounded-full border border-hairline bg-surface px-4 text-xs text-muted-foreground sm:h-10 sm:text-sm">
+            <Sparkles className="size-4 text-white" />
             Automated, bot driven trade cycles
           </div>
-          <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-            Put your capital to work with bots that trade{" "}
-            <span className="brand-gradient-text">while you sleep</span>
+          <h1 className="mt-6 text-[40px] leading-[1.2] font-bold tracking-tight sm:text-[44px] lg:text-[56px]">
+            Deep Quantitative
+            <br />
+            <span className="brand-gradient-text">Algorithmic Trading</span>
+            <br />
+            Bot Network
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground sm:text-xl">
+          <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
             Automated trading bots running fixed cycle strategies in financial markets, with
-            published rate ranges. Proven payouts released the moment each cycle completes.
+            published rate ranges. A demonstrated track record of performance, visible the moment each
+            cycle completes.
           </p>
-          <div className="mt-8 flex flex-nowrap gap-2 sm:gap-4">
+          <div className="mt-8 flex flex-nowrap gap-3">
             <Button
-              size="sm"
               nativeButton={false}
-              className="h-10 px-4 text-sm sm:h-11 sm:px-5 sm:text-base lg:h-14 lg:px-7 lg:text-lg brand-gradient text-background hover:opacity-90"
+              className="h-10 gap-1.5 rounded-xl px-4 text-sm sm:h-11 sm:px-5 sm:text-base lg:h-12 lg:px-6 lg:text-base brand-gradient text-primary-foreground hover:opacity-90"
               render={
                 <Link href="/signup">
-                  Get started <ArrowRight className="ml-1 size-4" />
+                  Get started <ArrowRight className="size-4" />
                 </Link>
               }
             />
             <Button
-              size="sm"
               variant="outline"
               nativeButton={false}
-              className="h-10 px-4 text-sm sm:h-11 sm:px-5 sm:text-base lg:h-14 lg:px-7 lg:text-lg"
-              render={<Link href="/plans">View trading bots</Link>}
+              className="h-10 gap-1.5 rounded-xl px-4 text-sm sm:h-11 sm:px-5 sm:text-base lg:h-12 lg:px-6 lg:text-base"
+              render={
+                <Link href="/plans">
+                  <TrendingUp className="size-4" /> View trading bots
+                </Link>
+              }
             />
           </div>
 
-          <dl className="mt-12 grid grid-cols-3 gap-2 border-t border-hairline pt-8 sm:gap-6">
+          <dl className="mt-12 flex flex-nowrap justify-between gap-y-6 border-t border-hairline pt-8">
             {stats.map((stat) => (
-              <div key={stat.label}>
-                <dt className="text-[10px] text-muted-foreground sm:text-xs">{stat.label}</dt>
-                <dd className="mt-1 text-sm font-semibold sm:text-xl">{stat.value}</dd>
+              <div key={stat.label} className="min-w-[5.5rem] text-center">
+                <dd className="text-lg font-extrabold text-white sm:text-2xl lg:text-3xl">{stat.value}</dd>
+                <dt className="mt-1 text-nowrap text-[10px] tracking-tight text-muted-foreground sm:text-sm sm:tracking-normal">
+                  {stat.label}
+                </dt>
               </div>
             ))}
           </dl>
         </div>
 
         <div className="mt-4 lg:mt-0">
-          <TradeExecutionVisual />
+          <TradeDashboardMockup />
         </div>
       </div>
     </section>
   );
 }
 
-function CandlestickMotif() {
-  const bars = [40, 65, 30, 80, 55, 90, 45, 70, 35, 60, 85, 50];
+// Phone screen "camera notch", the same small pill cutout on both the
+// background and foreground phones so they read as actual devices rather
+// than plain rounded cards.
+function Notch() {
   return (
-    <svg
-      className="absolute bottom-0 left-0 h-1/3 w-full opacity-[0.12]"
-      viewBox="0 0 600 100"
-      preserveAspectRatio="none"
-      aria-hidden
-    >
-      {bars.map((h, i) => (
-        <rect
-          key={i}
-          x={i * 50 + 10}
-          y={100 - h}
-          width="18"
-          height={h}
-          fill={i % 3 === 0 ? "#ef4444" : "#14b8a6"}
-        />
-      ))}
-    </svg>
+    <div className="absolute top-2 left-1/2 z-10 h-2 w-16 -translate-x-1/2 rounded-full bg-background/80" />
   );
 }
 
-type TradePhase = "placing" | "tapped" | "executing" | "dashboard";
+type TradePhase = "home" | "chooseBot" | "selectAmount" | "executing";
 
-function TradeExecutionVisual() {
-  const [phase, setPhase] = useState<TradePhase>("placing");
+const tradeBots = [
+  { name: "AetherGuard", rate: "0.25% to 0.6%", selected: false },
+  { name: "QuantumPulse", rate: "0.8% to 1.8%", selected: true },
+  { name: "TitanForge", rate: "2.0% to 4.5%", selected: false },
+];
+
+// Two badges anchor to the background "Transparency" phone (top center,
+// left mid), two anchor to the foreground "Home" phone (top right, bottom
+// right) - each bobs slowly and independently via its own duration/delay.
+const forexBadges = [
+  {
+    pair: "USD/JPY",
+    flag: "🇺🇸",
+    showFlag: true,
+    showTrend: false,
+    position: "-top-5 left-1/2 -translate-x-1/2",
+    duration: 3.2,
+    delay: 0,
+  },
+  {
+    pair: "EUR/USD",
+    flag: "🇪🇺",
+    showFlag: true,
+    showTrend: false,
+    position: "top-1/2 -left-4 -translate-y-1/2",
+    duration: 2.8,
+    delay: 0.4,
+  },
+  {
+    pair: "GBP/JPY",
+    flag: "🇬🇧",
+    showFlag: false,
+    showTrend: true,
+    position: "top-6 right-6",
+    duration: 3,
+    delay: 0.8,
+  },
+  {
+    pair: "XAU/USD",
+    flag: "🥇",
+    showFlag: false,
+    showTrend: true,
+    position: "-right-3 -bottom-3",
+    duration: 2.6,
+    delay: 0.2,
+  },
+] as const;
+
+function TradeDashboardMockup() {
+  const [phase, setPhase] = useState<TradePhase>("home");
 
   useEffect(() => {
     const durations: Record<TradePhase, number> = {
-      placing: 1800,
-      tapped: 500,
-      executing: 2600,
-      dashboard: 2400,
+      home: 3000,
+      chooseBot: 1900,
+      selectAmount: 1900,
+      executing: 2400,
     };
     const next: Record<TradePhase, TradePhase> = {
-      placing: "tapped",
-      tapped: "executing",
-      executing: "dashboard",
-      dashboard: "placing",
+      home: "chooseBot",
+      chooseBot: "selectAmount",
+      selectAmount: "executing",
+      executing: "home",
     };
     const timer = setTimeout(() => setPhase((p) => next[p]), durations[phase]);
     return () => clearTimeout(timer);
   }, [phase]);
 
-  const executing = phase === "executing";
-
   return (
-    <div className="relative mx-auto h-[38rem] w-full max-w-[21rem]">
-      <motion.div
-        className="absolute inset-0 rounded-3xl brand-gradient opacity-20 blur-2xl"
-        animate={{ opacity: [0.15, 0.3, 0.15] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-      />
+    <div className="relative mx-auto h-[34rem] w-full max-w-[26rem]">
+      <div className="absolute inset-0 rounded-3xl brand-gradient opacity-20 blur-2xl" />
 
-      {/* Bot execution badge, active while the bot is working the trade. Sits
-          outside the scene's overflow-hidden box on purpose, so it can spill
-          past the background's edge instead of being clipped by it. */}
-      <div className="absolute top-12 right-12 z-10">
-        <motion.span
-          className="absolute inset-0 rounded-full border-2 border-primary"
-          animate={{
-            scale: executing ? [1, 1.9] : [1, 1.4],
-            opacity: executing ? [0.8, 0] : [0.4, 0],
-          }}
-          transition={{ duration: executing ? 1.1 : 1.8, repeat: Infinity, ease: "easeOut" }}
-        />
-        <motion.span
-          className="relative flex size-14 items-center justify-center rounded-full brand-gradient text-background shadow-lg"
-          animate={executing ? { rotate: 360 } : { rotate: 0 }}
-          transition={executing ? { duration: 1.6, repeat: Infinity, ease: "linear" } : { duration: 0.3 }}
-        >
-          <Bot className="size-7" />
-        </motion.span>
-      </div>
-      <div className="relative flex h-full w-full items-center justify-center">
-        {/* Signal traveling from the phone to the bot badge once the trade is confirmed */}
-        <svg className="absolute inset-0 h-full w-full" aria-hidden>
-          <line x1="50%" y1="42%" x2="80%" y2="18%" stroke="#14b8a6" strokeOpacity="0.35" strokeDasharray="4 6" />
-        </svg>
-        {phase !== "placing" ? (
-          <motion.span
-            key={phase}
-            className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary"
-            initial={{ left: "50%", top: "42%", opacity: 0 }}
-            animate={{ left: "80%", top: "18%", opacity: [0, 1, 0] }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-          />
-        ) : null}
-
-        {/* Phone mockup, sized to fill almost all of its container instead of
-            floating small in a lot of empty space */}
-        <div className="relative flex h-[34rem] w-[318px] flex-col rounded-[3rem] border-4 border-background bg-background/95 p-3 shadow-2xl">
-          <div className="relative flex-1 overflow-hidden rounded-[2.25rem] bg-surface p-[14px] px-[18px] pt-[42px]">
-            <div className="absolute top-3 left-1/2 z-10 h-6 w-24 -translate-x-1/2 rounded-full bg-background" />
-            <AnimatePresence mode="wait">
-              {phase === "executing" ? (
-                <motion.div
-                  key="executing"
-                  className="flex h-full flex-col items-center justify-center text-center"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <motion.span
-                    className="flex size-16 items-center justify-center rounded-full bg-primary/20 text-primary"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Bot className="size-8" />
-                  </motion.span>
-                  <p className="mt-5 text-lg font-semibold">Executing trade</p>
-                  <p className="mt-1 text-sm text-muted-foreground">QuantumPulse is placing your order</p>
-                  <div className="mt-5 h-2 w-full overflow-hidden rounded-full bg-background/60">
-                    <motion.div
-                      className="h-full rounded-full brand-gradient"
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{ duration: 2.2, ease: "easeInOut" }}
-                    />
-                  </div>
-                </motion.div>
-              ) : phase === "dashboard" ? (
-                <motion.div
-                  key="dashboard"
-                  className="flex h-full flex-col"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <p className="text-[9px] font-semibold">Welcome back, John</p>
-                  <p className="text-[6px] text-muted-foreground">Here is where your balances, trades, and account stand</p>
-
-                  {/* Mirrors the real dashboard's stat cards, one per row on
-                      mobile (grid-cols-1), each with its own full-width cta */}
-                  <div className="mt-2 rounded-sm brand-gradient p-2 text-background">
-                    <p className="text-[7px] opacity-80">Balance</p>
-                    <p className="text-tabular text-sm font-semibold">$135,386.39</p>
-                    <div className="mt-1 flex justify-between border-t border-background/20 pt-1 text-[6px]">
-                      <div>
-                        <p className="opacity-70">Total in</p>
-                        <p className="font-semibold">$158,900.00</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="opacity-70">Total out</p>
-                        <p className="font-semibold">$23,513.61</p>
-                      </div>
-                    </div>
-                    <div className="mt-1 rounded-md bg-background/15 py-1 text-center text-[7px] font-semibold">
-                      Fund account
-                    </div>
-                  </div>
-
-                  <div className="mt-3 rounded-sm border border-hairline bg-background/60 p-2">
-                    <p className="text-[7px] text-muted-foreground">Trade volume</p>
-                    <p className="text-tabular text-sm font-semibold">$96,400</p>
-                    <div className="mt-1 flex justify-between border-t border-hairline pt-1 text-[6px] text-muted-foreground">
-                      <div>
-                        <p>Total profit</p>
-                        <p className="font-semibold text-foreground">$9,842.60</p>
-                      </div>
-                      <div className="text-right">
-                        <p>Trades placed</p>
-                        <p className="font-semibold text-foreground">27</p>
-                      </div>
-                    </div>
-                    <div className="relative mt-1">
-                      <div className="rounded-md border border-hairline py-1 text-center text-[7px] font-semibold text-primary">
-                        Place a trade
-                      </div>
-                      <motion.span
-                        className="absolute left-1/2 top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary/70"
-                        animate={{ scale: [0.5, 1.6], opacity: [0.6, 0] }}
-                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
-                      />
-                      <motion.span
-                        className="absolute -bottom-3 left-1/3 text-sm leading-none drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)] select-none"
-                        animate={{ y: [2, -1, 2], rotate: 10 }}
-                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                        aria-hidden
-                      >
-                        👆
-                      </motion.span>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 rounded-sm border border-hairline bg-background/60 p-2">
-                    <p className="text-[7px] text-muted-foreground">Active trades</p>
-                    <div className="mt-0.5 flex items-center gap-1.5">
-                      <p className="text-tabular text-sm font-semibold">6</p>
-                      <span className="flex items-center gap-1 rounded-full bg-primary/15 px-1.5 py-0.5 text-[5.5px] text-primary">
-                        <motion.span
-                          className="size-1 rounded-full bg-primary"
-                          animate={{ opacity: [1, 0.3, 1] }}
-                          transition={{ duration: 1.4, repeat: Infinity }}
-                        />
-                        QuantumPulse live
-                      </span>
-                    </div>
-                    <div className="mt-1 flex justify-between border-t border-hairline pt-1 text-[6px] text-muted-foreground">
-                      <div>
-                        <p>Active profit</p>
-                        <p className="font-semibold text-foreground">$412.90</p>
-                      </div>
-                      <div className="text-right">
-                        <p>Principal locked</p>
-                        <p className="font-semibold text-foreground">$28,650</p>
-                      </div>
-                    </div>
-                    <div className="mt-1 rounded-md border border-hairline py-1 text-center text-[7px] font-semibold text-primary">
-                      Manage trades
-                    </div>
-                  </div>
-
-                  {/* Mini yearly bars, mirrors the real dashboard's yearly
-                      activity chart (trade volume + profit, one color each) */}
-                  <div className="mt-3 rounded-sm border border-hairline bg-background/60 p-2">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[7px] text-muted-foreground">Yearly activity</p>
-                      <div className="flex items-center gap-1.5 text-[5.5px] text-muted-foreground">
-                        <span className="flex items-center gap-0.5">
-                          <span className="size-1 rounded-full bg-[#3b82f6]" /> Volume
-                        </span>
-                        <span className="flex items-center gap-0.5">
-                          <span className="size-1 rounded-full bg-status-good" /> Profit
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-1 flex h-7 items-end gap-1">
-                      {[
-                        [40, 12], [55, 18], [48, 15], [65, 22], [58, 20], [72, 28],
-                        [60, 24], [80, 32], [70, 30], [90, 38], [85, 36], [100, 44],
-                      ].map(([vol, profit], i) => (
-                        <span key={i} className="flex h-full flex-1 items-end gap-px">
-                          <span className="w-1/2 bg-[#3b82f6]/60" style={{ height: `${vol}%` }} />
-                          <span className="w-1/2 bg-status-good/60" style={{ height: `${profit}%` }} />
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-0.5 flex justify-between text-[4.5px] text-muted-foreground">
-                      {["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"].map((m) => (
-                        <span key={m}>{m}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Mobile bottom tab bar, mirrors the real app's mobileQuickNav */}
-                  <div className="-mx-[18px] -mb-[14px] mt-auto grid grid-cols-4 gap-1 border-t border-hairline bg-background/80 px-2 pt-1 pb-1.5">
-                    <div className="flex flex-col items-center gap-0.5 text-primary">
-                      <Home className="size-2.5" />
-                      <span className="text-[5px] font-medium">Home</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-0.5 text-muted-foreground">
-                      <Wallet className="size-2.5" />
-                      <span className="text-[5px]">Wallet</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-0.5 text-muted-foreground">
-                      <TrendingUp className="size-2.5" />
-                      <span className="text-[5px]">Trading</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-0.5 text-muted-foreground">
-                      <Receipt className="size-2.5" />
-                      <span className="text-[5px]">Transactions</span>
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="placing"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <p className="text-sm text-muted-foreground">Place a trade</p>
-
-                  <div className="mt-4 flex items-center gap-3 rounded-xl border border-hairline bg-background/60 px-4 py-3">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
-                      <Bot className="size-5" />
-                    </span>
-                    <span className="text-base font-medium">QuantumPulse</span>
-                  </div>
-
-                  <div className="mt-4 rounded-xl border border-hairline bg-background/60 px-4 py-3">
-                    <p className="text-xs text-muted-foreground">Amount</p>
-                    <p className="text-tabular text-2xl font-semibold">$500.00</p>
-                  </div>
-
-                  <div className="relative mt-6">
-                    <motion.div
-                      className="w-full rounded-xl brand-gradient py-3.5 text-center text-base font-semibold text-background"
-                      animate={phase === "tapped" ? { scale: 0.94 } : { scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      Confirm trade
-                    </motion.div>
-                    <motion.span
-                      className="absolute left-1/2 top-1/2 size-14 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/70"
-                      animate={{ scale: [0.5, 1.6], opacity: [0.6, 0] }}
-                      transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
-                    />
-                    <motion.span
-                      className="absolute -bottom-14 left-0 text-6xl leading-none drop-shadow-[0_4px_5px_rgba(0,0,0,0.45)] select-none"
-                      animate={
-                        phase === "tapped"
-                          ? { y: -22, scale: 0.92, rotate: 4 }
-                          : { y: [6, -1, 6], scale: 1, rotate: 14 }
-                      }
-                      transition={
-                        phase === "tapped"
-                          ? { duration: 0.2 }
-                          : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
-                      }
-                      aria-hidden
-                    >
-                      👆
-                    </motion.span>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+      {/* Background panel: portfolio/transparency overview, offset up-left
+          and partially covered by the foreground phone in front of it. */}
+      <div className="absolute top-0 left-0 h-[29rem] w-[15.5rem] overflow-hidden rounded-3xl border border-hairline bg-card p-4 pt-8 shadow-2xl">
+        <Notch />
+        <div className="flex items-center gap-2 text-sm font-semibold">
+          <ArrowLeft className="size-4 text-muted-foreground" />
+          Transparency
         </div>
 
-        {/* Live ticking readout, matches the phone's own width (the phone
-            sits centered with an 8px margin on each side of this container).
-            Hidden on the dashboard phase, whose in-phone bottom nav already
-            occupies that same space. */}
-        {phase !== "dashboard" ? (
-          <div className="absolute bottom-5 left-2 right-2 rounded-xl border border-hairline bg-background/70 px-4 py-3 backdrop-blur">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>QuantumPulse · {executing ? "executing" : "ready"}</span>
-              <span className="flex items-center gap-1.5">
-                <motion.span
-                  className="size-1.5 rounded-full bg-status-good"
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 1.4, repeat: Infinity }}
-                />
-                live
-              </span>
+        <div className="mt-4 space-y-2.5">
+          {[
+            { label: "Profits This Week", value: "2.34%", delta: "+0.45%" },
+            { label: "Average Weekly Profit", value: "2.87%" },
+            { label: "Performance Overview", value: "3.02%" },
+          ].map((row) => (
+            <div key={row.label} className="rounded-xl border border-hairline bg-background/60 p-2.5">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] text-muted-foreground">{row.label}</p>
+                {row.delta ? (
+                  <span className="rounded-full bg-status-good/15 px-1.5 py-0.5 text-[9px] font-medium text-status-good">
+                    {row.delta}
+                  </span>
+                ) : null}
+              </div>
+              <p className="text-tabular text-sm font-semibold">{row.value}</p>
             </div>
-            <div className="mt-1 text-tabular text-base font-semibold text-status-good">+1.14% today</div>
-          </div>
-        ) : null}
+          ))}
+        </div>
+
+        <div className="mt-3 flex gap-1 rounded-full border border-hairline bg-background/60 p-1 text-[9px]">
+          <span className="rounded-full bg-primary/30 px-2 py-1 font-semibold text-primary">Week</span>
+          <span className="px-2 py-1 text-muted-foreground">Month</span>
+          <span className="px-2 py-1 text-muted-foreground">3M</span>
+        </div>
+
+        <div className="mt-3 mb-4 flex h-28 items-end gap-1">
+          {[30, 45, 38, 55, 48, 62, 50, 70].map((h, i) => (
+            <span key={i} className="w-full rounded-t-sm bg-primary/30" style={{ height: `${h}%` }} />
+          ))}
+        </div>
       </div>
+
+      {/* Foreground panel: account home, offset down-right over the
+          background panel. Its whole body (below the notch) swaps between
+          four screens: Home -> Choose a bot -> Select amount -> Trade list
+          (executing), then loops back to Home. */}
+      <div className="absolute right-0 bottom-0 flex h-[30rem] w-[15.5rem] flex-col overflow-hidden rounded-3xl border-4 border-background bg-card p-4 pt-6 shadow-2xl">
+        <Notch />
+        <AnimatePresence mode="wait" initial={false}>
+          {phase === "home" ? (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-1 flex-col"
+            >
+              <div className="flex items-center justify-between">
+                <span className="flex size-8 items-center justify-center rounded-full brand-gradient text-xs font-semibold text-background">
+                  JD
+                </span>
+                <p className="text-sm font-semibold">Home</p>
+                <Bell className="size-4 text-muted-foreground" />
+              </div>
+              <p className="mt-3 text-xs font-semibold">Welcome back, John</p>
+              <p className="text-[10px] text-muted-foreground">Here is your portfolio overview</p>
+
+              <div className="mt-3 rounded-2xl brand-gradient p-3 text-background">
+                <p className="text-[10px] opacity-80">Balance</p>
+                <p className="text-tabular text-lg font-bold">$135,386.39</p>
+                <div className="mt-2 rounded-full bg-background/15 py-1.5 text-center text-[10px] font-semibold">
+                  Add funds
+                </div>
+              </div>
+
+              <div className="relative mt-3 rounded-2xl border border-hairline bg-background/60 p-3">
+                <p className="text-[10px] text-muted-foreground">Trade Volume</p>
+                <p className="text-tabular text-base font-bold">$96,400</p>
+                <div className="relative mt-2">
+                  <div className="rounded-full border border-hairline py-1.5 text-center text-[10px] font-semibold text-primary">
+                    Place trade
+                  </div>
+                  <motion.span
+                    className="absolute inset-0 rounded-full border border-primary/60"
+                    animate={{ scale: [1, 1.15], opacity: [0.6, 0] }}
+                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-3 rounded-2xl border border-hairline bg-background/60 p-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] text-muted-foreground">Current Week Profit</p>
+                  <span className="rounded-full bg-status-good/15 px-1.5 py-0.5 text-[9px] font-medium text-status-good">
+                    +1.91%
+                  </span>
+                </div>
+                <p className="text-tabular text-base font-bold">$9,842.60</p>
+                <div className="mt-2 flex h-8 items-end gap-1">
+                  {[40, 60, 50, 75, 65].map((h, i) => (
+                    <span key={i} className="w-full rounded-t-sm bg-primary/30" style={{ height: `${h}%` }} />
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-auto flex items-center gap-2 rounded-2xl border border-hairline bg-background/60 p-3">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                  <Bot className="size-3.5" />
+                </span>
+                <div>
+                  <p className="text-[10px] font-semibold">Refer and earn, instantly</p>
+                  <p className="text-[9px] text-muted-foreground">Rewards added to your balance</p>
+                </div>
+              </div>
+            </motion.div>
+          ) : phase === "chooseBot" ? (
+            <motion.div
+              key="chooseBot"
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-1 flex-col"
+            >
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <ArrowLeft className="size-4 text-muted-foreground" />
+                Choose a bot
+              </div>
+              <div className="mt-4 space-y-2">
+                {tradeBots.map((bot) => (
+                  <div
+                    key={bot.name}
+                    className={`flex items-center gap-2 rounded-xl border p-2.5 ${
+                      bot.selected ? "border-primary bg-primary/10" : "border-hairline bg-background/60"
+                    }`}
+                  >
+                    <span
+                      className={`flex size-7 shrink-0 items-center justify-center rounded-full ${
+                        bot.selected ? "bg-primary/20 text-primary" : "bg-background text-muted-foreground"
+                      }`}
+                    >
+                      <Bot className="size-3.5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-semibold">{bot.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{bot.rate} daily</p>
+                    </div>
+                    {bot.selected ? <span className="size-2 shrink-0 rounded-full bg-primary" /> : null}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-auto rounded-full brand-gradient py-2 text-center text-[10px] font-semibold text-background">
+                Continue
+              </div>
+            </motion.div>
+          ) : phase === "selectAmount" ? (
+            <motion.div
+              key="selectAmount"
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-1 flex-col"
+            >
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <ArrowLeft className="size-4 text-muted-foreground" />
+                Select amount
+              </div>
+              <p className="mt-4 text-[10px] text-muted-foreground">Trading with QuantumPulse</p>
+              <p className="text-tabular mt-1 text-2xl font-bold">$500.00</p>
+              <div className="mt-4 grid grid-cols-4 gap-1.5">
+                {["100", "500", "1000", "Max"].map((amt) => (
+                  <div
+                    key={amt}
+                    className={`rounded-lg border py-1.5 text-center text-[9px] font-semibold ${
+                      amt === "500"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-hairline bg-background/60 text-muted-foreground"
+                    }`}
+                  >
+                    {amt === "500" ? "$500" : amt === "Max" ? "Max" : `$${amt}`}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-auto rounded-full brand-gradient py-2 text-center text-[10px] font-semibold text-background">
+                Confirm
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="executing"
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-1 flex-col"
+            >
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <ArrowLeft className="size-4 text-muted-foreground" />
+                Trading
+              </div>
+
+              <div className="mt-4 rounded-xl border border-primary/50 bg-primary/10 p-2.5">
+                <div className="flex items-center gap-2">
+                  <motion.span
+                    className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Bot className="size-3.5" />
+                  </motion.span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-semibold">QuantumPulse</p>
+                    <p className="text-[9px] text-muted-foreground">$500.00 trade</p>
+                  </div>
+                  <motion.span
+                    className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[8px] font-semibold text-primary"
+                    animate={{ opacity: [1, 0.4, 1] }}
+                    transition={{ duration: 1.2, repeat: Infinity }}
+                  >
+                    Executing
+                  </motion.span>
+                </div>
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-background/60">
+                  <motion.div
+                    className="h-full rounded-full brand-gradient"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 2.1, ease: "easeInOut" }}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-2 flex items-center gap-2 rounded-xl border border-hairline bg-background/60 p-2.5">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-status-good/15 text-status-good">
+                  <Bot className="size-3.5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-semibold">AetherGuard</p>
+                  <p className="text-[9px] text-muted-foreground">$250.00 trade</p>
+                </div>
+                <span className="rounded-full bg-status-good/15 px-1.5 py-0.5 text-[8px] font-semibold text-status-good">
+                  +1.4%
+                </span>
+              </div>
+
+              <div className="mt-auto flex items-center gap-2 rounded-2xl border border-hairline bg-background/60 p-3">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                  <Bot className="size-3.5" />
+                </span>
+                <div>
+                  <p className="text-[10px] font-semibold">Refer and earn, instantly</p>
+                  <p className="text-[9px] text-muted-foreground">Rewards added to your balance</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Floating forex instrument badges: two anchored to the background
+          "Transparency" phone (top center, left mid) and two to the
+          foreground "Home" phone (top right, bottom right), each bobbing
+          slowly and independently so they read as live, not static. */}
+      {forexBadges.map((badge) => (
+        <motion.span
+          key={badge.pair}
+          className={`absolute flex items-center gap-1 rounded-full border border-hairline bg-card px-2.5 py-1.5 shadow-xl ${badge.position}`}
+          animate={{ y: [0, -7, 0] }}
+          transition={{ duration: badge.duration, repeat: Infinity, ease: "easeInOut", delay: badge.delay }}
+        >
+          {badge.showFlag ? <span className="text-xs leading-none">{badge.flag}</span> : null}
+          {badge.showTrend ? <TrendingUp className="size-3 text-status-good" /> : null}
+          <span className="text-[10px] font-semibold">{badge.pair}</span>
+        </motion.span>
+      ))}
     </div>
   );
 }

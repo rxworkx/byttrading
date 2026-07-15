@@ -15,13 +15,10 @@ function formatUsd(value: number) {
   return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
-function EarningsContent() {
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("userId") ?? undefined;
+function EarningsContent({ userId }: { userId?: string }) {
   const [earnings, setEarnings] = useState<AdminEarnings | null>(null);
 
   useEffect(() => {
-    setEarnings(null);
     adminEarningsApi.get(userId).then(setEarnings);
   }, [userId]);
 
@@ -104,10 +101,18 @@ function EarningsContent() {
   );
 }
 
+function EarningsGate() {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId") ?? undefined;
+  // Keying on userId remounts EarningsContent (resetting its earnings state
+  // for free) instead of syncing a reset through an effect.
+  return <EarningsContent key={userId ?? "all"} userId={userId} />;
+}
+
 export default function AdminEarningsPage() {
   return (
     <Suspense>
-      <EarningsContent />
+      <EarningsGate />
     </Suspense>
   );
 }

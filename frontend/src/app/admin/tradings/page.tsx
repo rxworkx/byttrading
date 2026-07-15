@@ -154,7 +154,6 @@ function TradingsContent() {
   );
 
   const load = useCallback(() => {
-    setInvestments(null);
     adminInvestmentsApi
       .list(status === "ALL" ? undefined : (status as "active" | "COMPLETED" | "CANCELLED"), userId)
       .then(setInvestments);

@@ -40,13 +40,11 @@ export function BotActivityIndicator({
 
   useEffect(() => {
     if (!active) return;
-    setIndex(0);
     const interval = setInterval(() => {
       setIndex((i) => (i + 1) % trades.length);
       setStatusIndex((i) => (i + 1) % STATUS_MESSAGES.length);
     }, ROTATE_MS);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, trades.length]);
 
   const current = active ? trades[index % trades.length] : null;
