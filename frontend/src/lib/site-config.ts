@@ -9,10 +9,7 @@ export const siteConfig = {
 };
 
 export const socialLinks = [
-  { label: "X", href: "https://x.com/byttrading" },
-  { label: "Facebook", href: "https://facebook.com/byttrading" },
-  { label: "Instagram", href: "https://instagram.com/byttrading" },
-  { label: "LinkedIn", href: "https://linkedin.com/company/byttrading" },
+  { label: "WhatsApp", href: siteConfig.supportWhatsapp },
   { label: "Telegram", href: "https://t.me/byttrading" },
 ];
 

@@ -45,23 +45,17 @@ export class AuthController {
   ) {
     const isProd = this.config.get('NODE_ENV') === 'production';
     const configuredDomain = this.config.get<string>('COOKIE_DOMAIN');
+    const frontendUrl = this.config.get<string>('FRONTEND_URL');
+    const secure = frontendUrl?.startsWith('https') ?? false;
+
     // The 'localhost' default only makes sense in dev. In production the
-    // frontend and backend are normally on two unrelated hosts (e.g. two
-    // separate Render services with no shared parent domain), so a browser
-    // would reject 'Domain=localhost' outright and silently drop the
-    // cookie. Omit the Domain attribute unless it's been deliberately set
-    // to something else, so the cookie defaults to the exact backend host.
-    const domain =
-      isProd && configuredDomain === 'localhost' ? undefined : configuredDomain;
+    // frontend and backend are normally on two unrelated hosts, so omit the
+    // Domain attribute unless a valid domain is explicitly configured.
+    const domain = configuredDomain ? configuredDomain : undefined;
     const common = {
       httpOnly: true,
-      // The frontend and backend live on separate domains in production
-      // (e.g. two different Render services), so the browser only sends
-      // these cookies back on API requests if SameSite=None. Browsers
-      // require Secure whenever SameSite=None, which is why this is tied
-      // to isProd rather than a separate flag.
-      secure: isProd,
-      sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
+      secure,
+      sameSite: (secure ? 'none' : 'lax') as 'none' | 'lax',
       domain,
       path: '/',
     };
@@ -80,10 +74,8 @@ export class AuthController {
   }
 
   private clearSessionCookies(res: Response) {
-    const isProd = this.config.get('NODE_ENV') === 'production';
     const configuredDomain = this.config.get<string>('COOKIE_DOMAIN');
-    const domain =
-      isProd && configuredDomain === 'localhost' ? undefined : configuredDomain;
+    const domain = configuredDomain ? configuredDomain : undefined;
     res.clearCookie('access_token', { path: '/', domain });
     res.clearCookie('refresh_token', { path: '/', domain });
   }

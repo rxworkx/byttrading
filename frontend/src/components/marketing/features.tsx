@@ -67,8 +67,8 @@ function ChartBackdrop() {
 }
 
 const cycleStats = [
-  { label: "Cycle length", value: "7 to 21 days" },
-  { label: "Target rate range", value: "0.25% to 4.5%" },
+  { label: "Strategy clarity", value: "9.68/10" },
+  { label: "Execution accuracy", value: "9.87/10" },
 ] as const;
 
 const items = [
@@ -122,11 +122,11 @@ export function Features() {
           <div>
             <p className="text-sm font-semibold tracking-wide text-primary uppercase">Features</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-              Fixed cycle strategies with transparent pricing
+              Trade performance built for transparency
             </h2>
             <p className="mt-6 max-w-md text-lg section-light-muted">
-              Every bot publishes a target rate range and cycle length before you subscribe. Reviewed fund
-              movements and live market pricing keep everything else checked at every step.
+              Track execution quality, realized returns, and strategy accuracy in real time. Clear performance
+              signals and historical metrics help you evaluate every trade with confidence.
             </p>
             <Link
               href="/technology"
@@ -140,8 +140,8 @@ export function Features() {
                 <ArrowDownToLine className="size-5" />
               </span>
               <div>
-                <p className="text-sm font-semibold">Profit this cycle</p>
-                <p className="text-tabular text-3xl font-bold text-status-good">+$1,240.85</p>
+                <p className="text-sm font-semibold">Realtime performance signal</p>
+                <p className="text-tabular text-3xl font-bold text-status-good">95000 TPS</p>
               </div>
             </div>
           </div>
@@ -155,14 +155,14 @@ export function Features() {
                   <ShieldCheck className="size-5" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold">How every cycle works</p>
-                  <p className="text-xs section-light-muted">Published before you subscribe</p>
+                  <p className="text-sm font-semibold">Trade performance details</p>
+                  <p className="text-xs section-light-muted">Validated execution and returns</p>
                 </div>
               </div>
 
-              <p className="mt-6 text-xs section-light-muted">Trading capital</p>
+              <p className="mt-6 text-xs section-light-muted">Performance visibility</p>
               <p className="text-tabular mt-1 text-3xl font-bold">
-                $3,050.00 <span className="text-sm font-normal section-light-muted">USD</span>
+                Live cycle metrics
               </p>
 
               <div className="mt-5 grid grid-cols-2 gap-3">

@@ -12,6 +12,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.use(cookieParser());
+  app.getHttpAdapter().getInstance().set('trust proxy', true);
   app.enableCors({
     origin: config.get<string>('FRONTEND_URL'),
     credentials: true,

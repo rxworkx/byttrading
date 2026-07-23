@@ -19,7 +19,7 @@ export function SecurityTrust() {
           <div className="flex flex-col justify-center lg:col-span-7">
             <p className="text-sm font-semibold tracking-wide text-primary uppercase">Security and trust</p>
             <h2 className="mt-3 -ml-1 max-w-lg -rotate-1 text-4xl font-bold tracking-tight sm:text-5xl">
-              Built to be checked, not just trusted
+              Designed for transparency and data security
             </h2>
 
             <p className="mt-8 text-xl font-medium leading-snug tracking-tight sm:text-2xl">
@@ -66,12 +66,12 @@ export function SecurityTrust() {
                   Verify ABN <ExternalLink className="size-4" />
                 </Link>
                 <Link
-                  href="/documents/byt-trading-company-overview.pdf"
+                  href="/documents/asic-reg.pdf"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-lg brand-gradient px-5 py-3 text-base font-medium text-background hover:opacity-90"
                 >
-                  Company overview (PDF) <FileText className="size-4" />
+                  Company Overview (PDF) <FileText className="size-4" />
                 </Link>
               </div>
             </div>

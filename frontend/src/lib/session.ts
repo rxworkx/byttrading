@@ -1,4 +1,6 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
+import { getApiUrl } from "./api-url";
+
+const API_URL = getApiUrl();
 
 // Access tokens are short lived (15 minutes). Any authenticated request can
 // hit a 401 once the token expires, so this refreshes the session once via

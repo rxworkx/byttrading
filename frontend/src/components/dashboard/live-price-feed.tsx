@@ -8,11 +8,13 @@ interface PriceEntry {
   fetchedAt: string;
 }
 
+import { getApiUrl } from "@/lib/api-url";
+
 export function LivePriceFeed({ limit }: { limit?: number } = {}) {
   const [prices, setPrices] = useState<Record<string, PriceEntry> | null>(null);
 
   useEffect(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
+    const API_URL = getApiUrl();
     const load = () => fetch(`${API_URL}/prices`).then((r) => r.json()).then(setPrices);
     load();
     const interval = setInterval(load, 30_000);

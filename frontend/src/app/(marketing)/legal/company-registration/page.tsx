@@ -26,6 +26,9 @@ export default function CompanyRegistrationPage() {
         </div>
         <div>
           <dt className="text-xs text-muted-foreground">Verification</dt>
+          <a href="/documents/asic-reg.pdf" target="_blank" rel="noreferrer" className="text-primary font-medium hover:underline">
+            View ASIC Registration (PDF)
+          </a>
           <dd className="mt-1">
             <Link
               href={siteConfig.abnUrl}
@@ -36,16 +39,11 @@ export default function CompanyRegistrationPage() {
               View on the Australian Business Register <ExternalLink className="size-3.5" />
             </Link>
           </dd>
+          
         </div>
       </dl>
 
-      <p>
-        For a summary of what our business does, see our{" "}
-        <a href="/documents/byt-trading-company-overview.pdf" target="_blank" rel="noreferrer" className="text-primary hover:underline">
-          company overview document
-        </a>
-        .
-      </p>
+    
     </LegalPage>
   );
 }

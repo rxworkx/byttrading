@@ -41,7 +41,7 @@ class EnvironmentVariables {
 
   @IsOptional()
   @IsString()
-  COOKIE_DOMAIN = 'localhost';
+  COOKIE_DOMAIN?: string;
 
   @IsOptional()
   @IsString()

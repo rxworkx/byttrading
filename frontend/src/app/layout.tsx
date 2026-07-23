@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "BYT Trading | AI Trading Bots for Crypto Investors",
   description:
     "BYT Trading pairs your capital with AetherGuard, QuantumPulse, and TitanForge, automated trading bots that run fixed cycle strategies on your behalf.",
+  icons: [
+    { rel: "icon", url: "/favicon.png" },
+    { rel: "apple-touch-icon", url: "/favicon.png" },
+  ],
 };
 
 export default function RootLayout({

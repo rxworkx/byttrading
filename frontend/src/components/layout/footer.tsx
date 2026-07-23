@@ -1,13 +1,10 @@
 import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
-import { FacebookIcon, InstagramIcon, LinkedinIcon, TelegramIcon, XIcon } from "@/components/layout/social-icons";
+import { TelegramIcon, WhatsAppIcon } from "@/components/layout/social-icons";
 import { footerNav, siteConfig, socialLinks } from "@/lib/site-config";
 
 const socialIconMap = {
-  X: XIcon,
-  Facebook: FacebookIcon,
-  Instagram: InstagramIcon,
-  LinkedIn: LinkedinIcon,
+  WhatsApp: WhatsAppIcon,
   Telegram: TelegramIcon,
 };
 
