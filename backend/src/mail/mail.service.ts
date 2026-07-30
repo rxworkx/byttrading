@@ -15,10 +15,14 @@ export class MailService {
       'BYT Trading <no-reply@byttrading.com>';
     this.frontendUrl =
       this.config.get<string>('FRONTEND_URL') ?? 'https://byttrading.com';
+    const port = Number(this.config.get<string>('MAIL_PORT')) || 587;
     this.transporter = nodemailer.createTransport({
       host: this.config.get<string>('MAIL_HOST'),
-      port: this.config.get<number>('MAIL_PORT'),
-      secure: false,
+      port,
+      // Port 465 is implicit TLS (connect already encrypted); anything else
+      // (e.g. 587) uses STARTTLS, which nodemailer negotiates when secure
+      // is false. Hardcoding false broke providers like Hostinger on 465.
+      secure: port === 465,
       auth: this.config.get<string>('MAIL_USER')
         ? {
             user: this.config.get<string>('MAIL_USER'),
