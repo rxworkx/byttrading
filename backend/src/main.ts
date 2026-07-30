@@ -13,8 +13,12 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.getHttpAdapter().getInstance().set('trust proxy', true);
+  const frontendOrigins = (config.get<string>('FRONTEND_URL') ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
   app.enableCors({
-    origin: config.get<string>('FRONTEND_URL'),
+    origin: frontendOrigins,
     credentials: true,
   });
   app.useGlobalPipes(

@@ -45,8 +45,13 @@ export class AuthController {
   ) {
     const isProd = this.config.get('NODE_ENV') === 'production';
     const configuredDomain = this.config.get<string>('COOKIE_DOMAIN');
-    const frontendUrl = this.config.get<string>('FRONTEND_URL');
-    const secure = frontendUrl?.startsWith('https') ?? false;
+
+    // The frontend and backend live on separate domains in production (e.g.
+    // two different Render services), so the browser only sends these
+    // cookies back on API requests if SameSite=None. Browsers require
+    // Secure whenever SameSite=None, which is why this is tied to isProd
+    // rather than to FRONTEND_URL (which can now list multiple origins).
+    const secure = isProd;
 
     // The 'localhost' default only makes sense in dev. In production the
     // frontend and backend are normally on two unrelated hosts, so omit the
