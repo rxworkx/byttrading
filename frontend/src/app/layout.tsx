@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -40,6 +41,11 @@ export default function RootLayout({
           {children}
           <Toaster richColors position="top-right" theme="dark" />
         </TooltipProvider>
+        <Script id="smartsupp-key" strategy="lazyOnload">
+          {`window._smartsupp = window._smartsupp || {};
+_smartsupp.key = 'da0c2391d7a9b5adf09483bd32cc82586c07a1bd';`}
+        </Script>
+        <Script src="https://www.smartsuppchat.com/loader.js" strategy="lazyOnload" />
       </body>
     </html>
   );
