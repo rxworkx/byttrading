@@ -97,7 +97,11 @@ export class AuthService {
     }
 
     const verifyUrl = await this.createEmailVerificationToken(user);
-    await this.mailService.sendWelcomeEmail(user.email, user.firstName, verifyUrl);
+    // Fire and forget: the account is already created at this point, so a
+    // slow or unreachable mail server must never stall the signup response.
+    // MailService.send() already catches and logs its own errors, so this
+    // can't produce an unhandled rejection.
+    void this.mailService.sendWelcomeEmail(user.email, user.firstName, verifyUrl);
 
     await this.notificationRepo.save(
       this.notificationRepo.create({
@@ -133,7 +137,7 @@ export class AuthService {
         title: 'Registration bonus credited',
         body: `You have received a registration bonus of $${registrationBonus.toFixed(2)}.`,
       });
-      await this.mailService.sendCustomEmail(
+      void this.mailService.sendCustomEmail(
         user.email,
         'You received a registration bonus',
         `<p>Welcome aboard. A registration bonus of $${registrationBonus.toFixed(2)} has been credited to your wallet.</p>`,
@@ -157,7 +161,7 @@ export class AuthService {
         title: 'Referral bonus credited',
         body: `You have received a referral signup bonus of $${downlineBonus.toFixed(2)}.`,
       });
-      await this.mailService.sendCustomEmail(
+      void this.mailService.sendCustomEmail(
         user.email,
         'You received a referral bonus',
         `<p>A referral signup bonus of $${downlineBonus.toFixed(2)} has been credited to your wallet.</p>`,
@@ -179,7 +183,7 @@ export class AuthService {
         title: 'Referral bonus credited',
         body: `You have received a referral bonus of $${uplineBonus.toFixed(2)} for referring ${user.firstName} ${user.lastName}.`,
       });
-      await this.mailService.sendCustomEmail(
+      void this.mailService.sendCustomEmail(
         referrer.email,
         'You received a referral bonus',
         `<p>A referral bonus of $${uplineBonus.toFixed(2)} has been credited to your wallet for referring ${user.firstName} ${user.lastName}.</p>`,

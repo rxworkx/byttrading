@@ -29,6 +29,14 @@ export class MailService {
             pass: this.config.get<string>('MAIL_PASSWORD'),
           }
         : undefined,
+      // Without these, an unreachable/firewalled host (common on cloud
+      // hosts like Render, which some SMTP providers silently drop instead
+      // of refusing) leaves nodemailer waiting on the OS's TCP timeout,
+      // which can be minutes. Cap every stage so a bad connection fails
+      // fast instead of hanging the caller.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 10_000,
     });
   }
 
@@ -44,8 +52,17 @@ export class MailService {
         <td align="center">
           <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;max-width:480px;">
             <tr>
-              <td style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:24px 32px;">
-                <a href="${this.frontendUrl}" style="color:#ffffff;font-size:20px;font-weight:bold;text-decoration:none;">BYT Trading</a>
+              <td style="background-color:#ffffff;padding:24px 32px;border-bottom:1px solid #e4e4e7;">
+                <a href="${this.frontendUrl}" style="text-decoration:none;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:10px;">
+                        <img src="${this.frontendUrl}/images/brand/byt-logo-mark.png" width="64" height="26" alt="BYT Trading" style="display:block;border:0;height:26px;width:64px;" />
+                      </td>
+                      <td style="vertical-align:middle;color:#0d9488;font-size:20px;font-weight:bold;font-family:Arial,Helvetica,sans-serif;">BYT Trading</td>
+                    </tr>
+                  </table>
+                </a>
               </td>
             </tr>
             <tr>
