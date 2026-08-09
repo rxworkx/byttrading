@@ -1,11 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as dns from 'dns';
+import * as net from 'net';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private readonly transporter: nodemailer.Transporter;
+  private readonly host: string;
+  private readonly port: number;
+  private readonly auth: { user: string; pass: string } | undefined;
   private readonly from: string;
   private readonly frontendUrl: string;
 
@@ -15,20 +19,47 @@ export class MailService {
       'BYT Trading <no-reply@byttrading.com>';
     this.frontendUrl =
       this.config.get<string>('FRONTEND_URL') ?? 'https://byttrading.com';
-    const port = Number(this.config.get<string>('MAIL_PORT')) || 587;
-    this.transporter = nodemailer.createTransport({
-      host: this.config.get<string>('MAIL_HOST'),
-      port,
+    this.host = this.config.get<string>('MAIL_HOST') ?? '';
+    this.port = Number(this.config.get<string>('MAIL_PORT')) || 587;
+    const user = this.config.get<string>('MAIL_USER');
+    this.auth = user
+      ? { user, pass: this.config.get<string>('MAIL_PASSWORD') ?? '' }
+      : undefined;
+  }
+
+  // nodemailer resolves both A and AAAA records for a hostname and picks
+  // one at random to connect to (see node_modules/nodemailer/lib/shared).
+  // Render has no outbound IPv6 route, so whenever it randomly picked the
+  // AAAA address for a dual-stack host like Hostinger's, the connection
+  // failed instantly with ENETUNREACH. There is no transport option that
+  // changes this behaviour, so we resolve the A record ourselves and hand
+  // nodemailer a literal IP, which makes it skip its own DNS step entirely.
+  private async resolveIPv4Host(): Promise<string> {
+    if (!this.host || net.isIP(this.host)) return this.host;
+    try {
+      const addresses = await dns.promises.resolve4(this.host);
+      if (addresses.length) return addresses[0];
+    } catch (error) {
+      this.logger.warn(
+        `Falling back to hostname, IPv4 resolution failed for ${this.host}: ${(error as Error).message}`,
+      );
+    }
+    return this.host;
+  }
+
+  private buildTransporter(host: string): nodemailer.Transporter {
+    return nodemailer.createTransport({
+      host,
+      port: this.port,
       // Port 465 is implicit TLS (connect already encrypted); anything else
       // (e.g. 587) uses STARTTLS, which nodemailer negotiates when secure
       // is false. Hardcoding false broke providers like Hostinger on 465.
-      secure: port === 465,
-      auth: this.config.get<string>('MAIL_USER')
-        ? {
-            user: this.config.get<string>('MAIL_USER'),
-            pass: this.config.get<string>('MAIL_PASSWORD'),
-          }
-        : undefined,
+      secure: this.port === 465,
+      auth: this.auth,
+      // host above may be a resolved IP literal rather than the real
+      // hostname, so pin TLS's SNI/certificate check to the real hostname
+      // explicitly, otherwise validation would run against the IP instead.
+      tls: { servername: this.host },
       // Without these, an unreachable/firewalled host (common on cloud
       // hosts like Render, which some SMTP providers silently drop instead
       // of refusing) leaves nodemailer waiting on the OS's TCP timeout,
@@ -86,7 +117,8 @@ export class MailService {
 
   private async send(to: string, subject: string, contentHtml: string) {
     try {
-      await this.transporter.sendMail({
+      const host = await this.resolveIPv4Host();
+      await this.buildTransporter(host).sendMail({
         from: this.from,
         to,
         subject,

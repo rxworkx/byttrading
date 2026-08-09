@@ -33,7 +33,7 @@ export function TradingBots() {
                 <h3 className="text-xl font-semibold">{bot.name}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{bot.description}</p>
               </div>
-              <dl className="grid grid-cols-2 gap-4 border-t border-hairline pt-4 text-sm">
+              <dl className="hidden grid grid-cols-2 gap-4 border-t border-hairline pt-4 text-sm">
                 <div>
                   <dt className="text-xs text-muted-foreground">Target rate</dt>
                   <dd className="text-tabular mt-1 font-semibold text-status-good">
