@@ -1,74 +1,35 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as dns from 'dns';
-import * as net from 'net';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private readonly host: string;
-  private readonly port: number;
-  private readonly auth: { user: string; pass: string } | undefined;
+  private readonly resend: Resend;
   private readonly from: string;
   private readonly frontendUrl: string;
+  // Logo needs to load in the recipient's inbox, not on whatever machine
+  // sent the email, so it's pinned to the real production domain instead of
+  // FRONTEND_URL. FRONTEND_URL is localhost in dev and can hold a
+  // comma-separated list of origins in production (see main.ts CORS
+  // parsing), neither of which an external mail client can fetch an image
+  // from.
+  private readonly logoUrl =
+    'https://www.byttrading.com/images/brand/byt-logo-mark.png';
 
+  // SMTP to Hostinger from Render kept failing at the network level (an
+  // IPv6-only DNS pick with no outbound IPv6 route, then a plain connection
+  // timeout even pinned to IPv4), which pointed at Render's egress to that
+  // host rather than anything fixable in code. Resend sends over HTTPS to
+  // its own API instead of opening a raw SMTP socket, which sidesteps that
+  // class of problem entirely.
   constructor(private readonly config: ConfigService) {
+    this.resend = new Resend(this.config.get<string>('RESEND_API_KEY'));
     this.from =
       this.config.get<string>('MAIL_FROM') ??
       'BYT Trading <no-reply@byttrading.com>';
     this.frontendUrl =
       this.config.get<string>('FRONTEND_URL') ?? 'https://byttrading.com';
-    this.host = this.config.get<string>('MAIL_HOST') ?? '';
-    this.port = Number(this.config.get<string>('MAIL_PORT')) || 587;
-    const user = this.config.get<string>('MAIL_USER');
-    this.auth = user
-      ? { user, pass: this.config.get<string>('MAIL_PASSWORD') ?? '' }
-      : undefined;
-  }
-
-  // nodemailer resolves both A and AAAA records for a hostname and picks
-  // one at random to connect to (see node_modules/nodemailer/lib/shared).
-  // Render has no outbound IPv6 route, so whenever it randomly picked the
-  // AAAA address for a dual-stack host like Hostinger's, the connection
-  // failed instantly with ENETUNREACH. There is no transport option that
-  // changes this behaviour, so we resolve the A record ourselves and hand
-  // nodemailer a literal IP, which makes it skip its own DNS step entirely.
-  private async resolveIPv4Host(): Promise<string> {
-    if (!this.host || net.isIP(this.host)) return this.host;
-    try {
-      const addresses = await dns.promises.resolve4(this.host);
-      if (addresses.length) return addresses[0];
-    } catch (error) {
-      this.logger.warn(
-        `Falling back to hostname, IPv4 resolution failed for ${this.host}: ${(error as Error).message}`,
-      );
-    }
-    return this.host;
-  }
-
-  private buildTransporter(host: string): nodemailer.Transporter {
-    return nodemailer.createTransport({
-      host,
-      port: this.port,
-      // Port 465 is implicit TLS (connect already encrypted); anything else
-      // (e.g. 587) uses STARTTLS, which nodemailer negotiates when secure
-      // is false. Hardcoding false broke providers like Hostinger on 465.
-      secure: this.port === 465,
-      auth: this.auth,
-      // host above may be a resolved IP literal rather than the real
-      // hostname, so pin TLS's SNI/certificate check to the real hostname
-      // explicitly, otherwise validation would run against the IP instead.
-      tls: { servername: this.host },
-      // Without these, an unreachable/firewalled host (common on cloud
-      // hosts like Render, which some SMTP providers silently drop instead
-      // of refusing) leaves nodemailer waiting on the OS's TCP timeout,
-      // which can be minutes. Cap every stage so a bad connection fails
-      // fast instead of hanging the caller.
-      connectionTimeout: 10_000,
-      greetingTimeout: 10_000,
-      socketTimeout: 10_000,
-    });
   }
 
   // Every email shares the same branded header and footer, only the middle
@@ -83,14 +44,14 @@ export class MailService {
         <td align="center">
           <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;max-width:480px;">
             <tr>
-              <td style="background-color:#ffffff;padding:24px 32px;border-bottom:1px solid #e4e4e7;">
+              <td align="center" style="background-color:#ffffff;padding:24px 32px;border-bottom:1px solid #e4e4e7;text-align:center;">
                 <a href="${this.frontendUrl}" style="text-decoration:none;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
                     <tr>
                       <td style="vertical-align:middle;padding-right:10px;">
-                        <img src="${this.frontendUrl}/images/brand/byt-logo-mark.png" width="64" height="26" alt="BYT Trading" style="display:block;border:0;height:26px;width:64px;" />
+                        <img src="${this.logoUrl}" width="64" height="26" alt="BYT Trading" style="display:block;border:0;height:26px;width:64px;" />
                       </td>
-                      <td style="vertical-align:middle;color:#0d9488;font-size:20px;font-weight:bold;font-family:Arial,Helvetica,sans-serif;">BYT Trading</td>
+                      <td style="vertical-align:middle;color:#0d9488;font-size:20px;font-weight:900;font-family:'Arial Black',Arial,Helvetica,sans-serif;">BYT Trading</td>
                     </tr>
                   </table>
                 </a>
@@ -117,13 +78,13 @@ export class MailService {
 
   private async send(to: string, subject: string, contentHtml: string) {
     try {
-      const host = await this.resolveIPv4Host();
-      await this.buildTransporter(host).sendMail({
+      const { error } = await this.resend.emails.send({
         from: this.from,
         to,
         subject,
         html: this.wrapTemplate(contentHtml),
       });
+      if (error) throw new Error(error.message);
     } catch (error) {
       this.logger.warn(
         `Failed to send email to ${to}: ${(error as Error).message}`,

@@ -167,48 +167,12 @@ export class TransactionsService {
     });
   }
 
-  // Hard delete, real and irreversible. Only DEPOSIT/WITHDRAWAL are
-  // supported: every other type's wallet effect is entangled with another
-  // entity (a transfer's other leg, an investment's lockedAmount), so a
-  // one-row reversal here would risk corrupting more than it fixes — those
-  // are refused outright rather than guessed at. Mirrors confirm()/reject()
-  // above, inverted: whatever balance effect is currently outstanding for
-  // this row gets undone before the row itself goes away.
+  // Hard delete, real and irreversible. Removes the record only, wallet
+  // balances are left exactly as they are, any adjustment an admin wants
+  // alongside a delete is a separate, explicit action.
   async remove(id: string) {
-    return this.dataSource.transaction(async (manager) => {
-      const txRepo = manager.getRepository(Transaction);
-      const walletRepo = manager.getRepository(Wallet);
-
-      const tx = await txRepo.findOneBy({ id });
-      if (!tx) throw new NotFoundException('Transaction not found');
-      if (tx.type !== TransactionType.DEPOSIT && tx.type !== TransactionType.WITHDRAWAL) {
-        throw new BadRequestException('Only deposits and withdrawals can be deleted');
-      }
-
-      const depositCreditOutstanding =
-        tx.type === TransactionType.DEPOSIT && tx.status === TransactionStatus.COMPLETED;
-      const withdrawalDebitOutstanding =
-        tx.type === TransactionType.WITHDRAWAL &&
-        (tx.status === TransactionStatus.PENDING || tx.status === TransactionStatus.COMPLETED);
-
-      if ((depositCreditOutstanding || withdrawalDebitOutstanding) && tx.walletId) {
-        const wallet = await walletRepo.findOneBy({ id: tx.walletId });
-        if (wallet) {
-          const balance = new Decimal(wallet.balance);
-          const reversed = depositCreditOutstanding
-            ? balance.minus(tx.amount)
-            : balance.plus(tx.amount);
-          if (reversed.lt(0)) {
-            throw new BadRequestException(
-              'Cannot delete: reversing this deposit would take the wallet balance negative, the funds have already moved elsewhere',
-            );
-          }
-          wallet.balance = reversed.toFixed(8);
-          await walletRepo.save(wallet);
-        }
-      }
-
-      await txRepo.remove(tx);
-    });
+    const tx = await this.transactionRepo.findOneBy({ id });
+    if (!tx) throw new NotFoundException('Transaction not found');
+    await this.transactionRepo.remove(tx);
   }
 }

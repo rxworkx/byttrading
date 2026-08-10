@@ -213,8 +213,7 @@ function LedgerContent() {
                     Delete {selectedIds.size} transaction{selectedIds.size === 1 ? "" : "s"}?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Only deposits and withdrawals can be deleted; any wallet effect already applied is reversed
-                    first. This cannot be undone.
+                    This removes the record only, wallet balances are not adjusted. This cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

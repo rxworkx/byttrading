@@ -12,7 +12,7 @@ interface CachedPrice {
   fetchedAt: Date;
 }
 
-const REFRESH_INTERVAL_MS = 90_000;
+const REFRESH_INTERVAL_MS = 12 * 60 * 60 * 1000;
 
 @Injectable()
 export class PricesService implements OnModuleInit {

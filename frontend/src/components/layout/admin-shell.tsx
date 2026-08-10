@@ -69,6 +69,7 @@ const adminNavGroups: AdminNavGroup[] = [
     items: [
       { label: "Pending Transactions", href: "/admin/transactions", icon: Receipt },
       { label: "Transactions", href: "/admin/ledger", icon: Receipt },
+      { label: "Add Transaction", href: "/admin/add-transaction", icon: ListPlus },
       { label: "Deposits", href: "/admin/ledger?type=DEPOSIT", icon: Receipt },
       { label: "Withdrawals", href: "/admin/ledger?type=WITHDRAWAL", icon: Receipt },
       { label: "Referral Commissions", href: "/admin/ledger?type=REFERRAL_BONUS", icon: Gift },
