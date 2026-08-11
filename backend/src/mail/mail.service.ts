@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
+import { primaryFrontendUrl } from '../common/frontend-url.util';
 
 @Injectable()
 export class MailService {
@@ -28,8 +29,7 @@ export class MailService {
     this.from =
       this.config.get<string>('MAIL_FROM') ??
       'BYT Trading <no-reply@byttrading.com>';
-    this.frontendUrl =
-      this.config.get<string>('FRONTEND_URL') ?? 'https://byttrading.com';
+    this.frontendUrl = primaryFrontendUrl(this.config);
   }
 
   // Every email shares the same branded header and footer, only the middle

@@ -26,6 +26,7 @@ import { WalletsService } from '../wallets/wallets.service';
 import { SettingsService } from '../settings/settings.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { parseDurationToMs } from '../common/duration.util';
+import { primaryFrontendUrl } from '../common/frontend-url.util';
 import { generateOpaqueToken, generateOtpCode, hashToken } from './token.util';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
@@ -219,7 +220,7 @@ export class AuthService {
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       }),
     );
-    return `${this.config.get<string>('FRONTEND_URL')}/verify-email?token=${rawToken}`;
+    return `${primaryFrontendUrl(this.config)}/verify-email?token=${rawToken}`;
   }
 
   async resendVerification(email: string) {
@@ -401,7 +402,7 @@ export class AuthService {
           expiresAt: new Date(Date.now() + 60 * 60 * 1000),
         }),
       );
-      const resetUrl = `${this.config.get<string>('FRONTEND_URL')}/reset-password?token=${rawToken}`;
+      const resetUrl = `${primaryFrontendUrl(this.config)}/reset-password?token=${rawToken}`;
       await this.mailService.sendPasswordResetEmail(user.email, resetUrl);
     }
     return { message: 'If that account exists, a reset link has been sent.' };
