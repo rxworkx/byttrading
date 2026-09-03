@@ -14,6 +14,7 @@ const statusStyles: Record<Investment["status"], string> = {
   AWAITING: "bg-status-warning/15 text-status-warning",
   ACTIVE: "bg-secondary text-foreground",
   LOCKED: "bg-secondary text-foreground",
+  SYNCING: "bg-status-warning/15 text-status-warning",
   COMPLETED: "bg-status-good/15 text-status-good",
   CANCELLED: "bg-destructive/15 text-destructive",
 };
@@ -30,13 +31,14 @@ export function ActiveInvestmentCard({
   const endDate = investment.endDate ? new Date(investment.endDate) : null;
   const daysLeft = endDate ? Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))) : null;
   const isRunning = investment.status === "ACTIVE";
+  const isSyncing = investment.status === "SYNCING";
   const bot = bots.find((b) => b.slug === investment.plan.slug);
 
   async function endTrade() {
     setEnding(true);
     try {
       await investmentsApi.end(investment.id);
-      toast.success("Trade ended. Principal and profit credited to your wallet.");
+      toast.success("Trade completed. Syncing.");
       onChanged?.();
     } catch (error) {
       toast.error(error instanceof ApiError ? error.message : "Could not end this trade");
@@ -75,9 +77,11 @@ export function ActiveInvestmentCard({
                     ? `${daysLeft} day${daysLeft === 1 ? "" : "s"} remaining`
                     : "Completing soon"
               }`
-            : investment.completedAt
-              ? ` · Completed ${formatDateTime(investment.completedAt)}`
-              : ""}
+            : isSyncing
+              ? " · Syncing"
+              : investment.completedAt
+                ? ` · Completed ${formatDateTime(investment.completedAt)}`
+                : ""}
         </p>
         {investment.status === "ACTIVE" ? (
           <Button size="sm" variant="outline" className="w-full" onClick={endTrade} disabled={ending}>

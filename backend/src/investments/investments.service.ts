@@ -213,7 +213,7 @@ export class InvestmentsService {
     for (const investment of dueForCompletion) {
       try {
         await this.dataSource.transaction(async (manager) => {
-          await this.completeInvestment(manager, investment.id);
+          await this.markSyncing(manager, investment.id);
         });
       } catch (error) {
         this.logger.error(
@@ -338,13 +338,43 @@ export class InvestmentsService {
     await investmentRepo.save(fresh);
   }
 
+  // Stops a trade cycle without touching the wallet: accrual has already
+  // stopped (caller applies any final accrual first), so this just freezes
+  // the investment as SYNCING and tells the customer their cycle is done.
+  // The actual payout only happens once an admin releases it via
+  // completeInvestment, called either from that same SYNCING state or,
+  // for an admin forcing an in-progress trade straight through, from ACTIVE.
+  private async markSyncing(manager: EntityManager, investmentId: string) {
+    const investmentRepo = manager.getRepository(Investment);
+    const investment = await investmentRepo.findOneBy({ id: investmentId });
+    if (!investment || investment.status !== InvestmentStatus.ACTIVE) return;
+
+    investment.status = InvestmentStatus.SYNCING;
+    await investmentRepo.save(investment);
+
+    const notificationRepo = manager.getRepository(Notification);
+    await notificationRepo.save(
+      notificationRepo.create({
+        userId: investment.userId,
+        type: NotificationType.INVESTMENT,
+        title: 'Trade cycle completed',
+        body: 'Your trade cycle has completed and is syncing.',
+      }),
+    );
+  }
+
   private async completeInvestment(
     manager: EntityManager,
     investmentId: string,
   ) {
     const investmentRepo = manager.getRepository(Investment);
     const investment = await investmentRepo.findOneBy({ id: investmentId });
-    if (!investment || investment.status !== InvestmentStatus.ACTIVE) return;
+    if (
+      !investment ||
+      (investment.status !== InvestmentStatus.ACTIVE &&
+        investment.status !== InvestmentStatus.SYNCING)
+    )
+      return;
 
     const releaseAmount = new Decimal(investment.lockedAmount);
     const { wallet, tokenAmount } = await this.walletsService.creditWalletUsdValue(
@@ -524,24 +554,32 @@ export class InvestmentsService {
 
     return this.dataSource.transaction(async (manager) => {
       // Credit any period that came due between the last cron tick and this
-      // exact moment before paying out, so an early end never shorts a
-      // period that's already elapsed just because the sweep hasn't run yet.
+      // exact moment before freezing the cycle, so an early end never shorts
+      // a period that's already elapsed just because the sweep hasn't run yet.
       const plan = await this.plansService.findById(investment.planId);
       await this.applyScheduledAccruals(manager, investment.id, plan.rateRange);
-      await this.completeInvestment(manager, investment.id);
+      await this.markSyncing(manager, investment.id);
       return manager.getRepository(Investment).findOneBy({ id: investment.id });
     });
   }
 
-  // Admin-triggered version of completeInvestment: bypasses the ownership
-  // and minTerm checks endEarly enforces for user-initiated exits.
+  // This is the actual wallet release: an admin funds the trade's principal
+  // and profit out, either finishing off a trade already SYNCING (the
+  // normal case, the cycle ended and is waiting on this) or forcing an
+  // ACTIVE one straight through. Bypasses the ownership and minTerm checks
+  // endEarly enforces for user-initiated exits.
   async adminCompleteInvestment(investmentId: string) {
     const investment = await this.investmentRepo.findOneBy({
       id: investmentId,
     });
     if (!investment) throw new NotFoundException('Trade not found');
-    if (investment.status !== InvestmentStatus.ACTIVE) {
-      throw new BadRequestException('Only an active trade can be completed');
+    if (
+      investment.status !== InvestmentStatus.ACTIVE &&
+      investment.status !== InvestmentStatus.SYNCING
+    ) {
+      throw new BadRequestException(
+        'Only an active or syncing trade can be completed',
+      );
     }
 
     return this.dataSource.transaction(async (manager) => {
@@ -610,9 +648,9 @@ export class InvestmentsService {
   }
 
   // Hard delete, real and irreversible. Only COMPLETED/CANCELLED investments
-  // qualify — an ACTIVE/AWAITING one still has real funds represented by
-  // lockedAmount with no wallet credit on record, so deleting it would make
-  // that money vanish. Linked Transactions (INVESTMENT_LOCK,
+  // qualify — an ACTIVE/AWAITING/SYNCING one still has real funds represented
+  // by lockedAmount with no wallet credit on record, so deleting it would
+  // make that money vanish. Linked Transactions (INVESTMENT_LOCK,
   // PRINCIPAL_RELEASE, PROFIT_CREDIT, REFERRAL_BONUS) survive the delete and
   // keep their own history, just losing the relatedInvestmentId
   // cross-reference (see migration SetNullOnDeleteForOptionalRefs).

@@ -94,7 +94,7 @@ export interface Investment {
   payFrequency: string;
   payWalletFrequency: string | null;
   minTerm: string;
-  status: "AWAITING" | "ACTIVE" | "LOCKED" | "COMPLETED" | "CANCELLED";
+  status: "AWAITING" | "ACTIVE" | "LOCKED" | "SYNCING" | "COMPLETED" | "CANCELLED";
   startDate: string;
   endDate: string | null;
   nextAccrualAt: string;

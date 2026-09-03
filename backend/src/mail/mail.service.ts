@@ -209,7 +209,7 @@ export class MailService {
       to,
       `Your trade with ${planName} is complete`,
       `<p>Hi ${firstName},</p>
-       <p>Your trade cycle with ${planName} has completed. Your principal of $${principalUsd} plus $${profitUsd} in profit has been credited back to your wallet.</p>
+       <p>Your trade cycle with ${planName} has ended and is syncing</p>
        <p><a href="${this.frontendUrl}/trading">View your trades</a></p>`,
     );
   }

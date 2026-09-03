@@ -34,6 +34,10 @@ export enum InvestmentStatus {
   // LOCKED is retained only because Postgres enum values can't be dropped;
   // no code should write it anymore, existing rows were backfilled to ACTIVE.
   LOCKED = 'LOCKED',
+  // A trade cycle has ended (accrual stopped, funds no longer at risk) but
+  // the payout hasn't hit the wallet yet, an admin still has to release it.
+  // The customer only ever sees this as a generic "syncing" state.
+  SYNCING = 'SYNCING',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
 }

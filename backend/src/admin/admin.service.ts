@@ -96,6 +96,7 @@ export class AdminService {
         where: [
           { status: InvestmentStatus.ACTIVE },
           { status: InvestmentStatus.AWAITING },
+          { status: InvestmentStatus.SYNCING },
         ],
       }),
       this.walletRepo.find({
@@ -316,7 +317,9 @@ export class AdminService {
         activeTradesUsd: userInvestments
           .filter(
             (inv) =>
-              inv.status === InvestmentStatus.ACTIVE || inv.status === InvestmentStatus.AWAITING,
+              inv.status === InvestmentStatus.ACTIVE ||
+              inv.status === InvestmentStatus.AWAITING ||
+              inv.status === InvestmentStatus.SYNCING,
           )
           .reduce((sum, inv) => sum + Number(inv.principal), 0),
         earningsUsd: sumUsd(userTransactions, TransactionType.PROFIT_CREDIT),
@@ -356,7 +359,12 @@ export class AdminService {
       balanceUsd: wallets.reduce((sum, w) => sum + Number(w.usdValue), 0),
       tradesUsd: investments.reduce((sum, inv) => sum + Number(inv.principal), 0),
       activeTradesUsd: investments
-        .filter((inv) => inv.status === InvestmentStatus.ACTIVE || inv.status === InvestmentStatus.AWAITING)
+        .filter(
+          (inv) =>
+            inv.status === InvestmentStatus.ACTIVE ||
+            inv.status === InvestmentStatus.AWAITING ||
+            inv.status === InvestmentStatus.SYNCING,
+        )
         .reduce((sum, inv) => sum + Number(inv.principal), 0),
       earningsUsd: sumUsd(transactions, TransactionType.PROFIT_CREDIT),
       referralCommissionUsd: sumUsd(transactions, TransactionType.REFERRAL_BONUS),
@@ -598,13 +606,16 @@ export class AdminService {
   }
 
   // Backs both "Active Trades" and "Tradings": same listing, "active" just
-  // maps to the two in-progress statuses instead of one exact status.
+  // maps to the in-progress statuses instead of one exact status. SYNCING is
+  // included here, a trade sitting there is exactly what needs an admin's
+  // attention (its cycle ended and its payout is waiting on them).
   async listInvestments(status?: string, userId?: string) {
     let where: FindOptionsWhere<Investment> | FindOptionsWhere<Investment>[];
     if (status === 'active') {
       where = [
         { status: InvestmentStatus.ACTIVE },
         { status: InvestmentStatus.AWAITING },
+        { status: InvestmentStatus.SYNCING },
       ];
     } else if (status) {
       where = { status: status as InvestmentStatus };

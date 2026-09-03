@@ -28,9 +28,15 @@ import { ApiError } from "@/lib/dashboard-api";
 import { formatDateTime, formatLabel } from "@/lib/utils";
 import { useRowSelection } from "@/lib/use-row-selection";
 
+// SYNCING isn't a target an admin picks, the backend only ever sets it
+// itself when a trade cycle ends. It's listed here so the badge on a
+// syncing trade gets its proper label and color; clicking it while it's
+// already current is a no-op, and picking it from another status is
+// rejected server side.
 const TRADE_STATUS_OPTIONS: StatusOption[] = [
   { value: "AWAITING", label: "Awaiting", className: "bg-status-warning/15 text-status-warning" },
   { value: "ACTIVE", label: "Active", className: "bg-secondary text-foreground" },
+  { value: "SYNCING", label: "Syncing, needs funding", className: "bg-status-warning/15 text-status-warning" },
   { value: "COMPLETED", label: "Completed", className: "bg-status-good/15 text-status-good" },
   { value: "CANCELLED", label: "Cancelled", className: "bg-destructive/15 text-destructive" },
 ];
@@ -39,6 +45,7 @@ const statusClassName: Record<AdminInvestment["status"], string> = {
   AWAITING: "bg-status-warning/15 text-status-warning",
   ACTIVE: "bg-secondary text-foreground",
   LOCKED: "bg-secondary text-foreground",
+  SYNCING: "bg-status-warning/15 text-status-warning",
   COMPLETED: "bg-status-good/15 text-status-good",
   CANCELLED: "bg-destructive/15 text-destructive",
 };

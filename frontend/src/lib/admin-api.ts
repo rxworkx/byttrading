@@ -245,7 +245,7 @@ export interface AdminInvestment {
   planName: string;
   principal: string;
   profitAccrued: string;
-  status: "AWAITING" | "ACTIVE" | "LOCKED" | "COMPLETED" | "CANCELLED";
+  status: "AWAITING" | "ACTIVE" | "LOCKED" | "SYNCING" | "COMPLETED" | "CANCELLED";
   term: string | null;
   startDate: string;
   endDate: string | null;

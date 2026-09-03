@@ -58,7 +58,10 @@ export default function DashboardPage() {
   }, []);
 
   const totalBalanceUsd = (wallets ?? []).reduce((sum, w) => sum + Number(w.usdValue || 0), 0);
-  const activeInvestments = investments?.filter((i) => i.status === "ACTIVE" || i.status === "LOCKED" || i.status === "AWAITING") ?? [];
+  const activeInvestments =
+    investments?.filter(
+      (i) => i.status === "ACTIVE" || i.status === "LOCKED" || i.status === "AWAITING" || i.status === "SYNCING",
+    ) ?? [];
   const recentTransactions = transactions
     ? [...transactions].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 6)
     : [];

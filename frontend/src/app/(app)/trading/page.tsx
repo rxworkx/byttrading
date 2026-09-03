@@ -89,7 +89,7 @@ function TradingContent() {
       return haystack.includes(query);
     };
     const isOngoing = (inv: Investment) =>
-      inv.status === "ACTIVE" || inv.status === "LOCKED" || inv.status === "AWAITING";
+      inv.status === "ACTIVE" || inv.status === "LOCKED" || inv.status === "AWAITING" || inv.status === "SYNCING";
     return [...investments]
       .filter((inv) => {
         if (statusFilter === "ALL") return true;
