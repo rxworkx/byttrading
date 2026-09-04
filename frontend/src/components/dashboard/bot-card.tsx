@@ -4,10 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { CheckCircle2 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { CheckCircle2, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import {
   Dialog,
@@ -18,6 +20,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { WalletSelect } from "@/components/dashboard/wallet-select";
+import { PaymentAssetSelect } from "@/components/dashboard/payment-asset-select";
 import { CurrencyAmountField } from "@/components/dashboard/currency-amount-field";
 import {
   subscriptionsApi,
@@ -25,6 +28,7 @@ import {
   ApiError,
   type InvestmentPlan,
   type Subscription,
+  type SubscriptionPaymentOption,
   type Wallet,
 } from "@/lib/dashboard-api";
 import { currencyLabel, sortWalletsByBalance } from "@/lib/asset-labels";
@@ -47,6 +51,7 @@ export function BotCard({
   image = DEFAULT_PLAN_IMAGE,
   tagline,
   wallets,
+  paymentOptions,
   onChanged,
 }: {
   plan: InvestmentPlan;
@@ -54,6 +59,7 @@ export function BotCard({
   image?: string;
   tagline?: string;
   wallets?: Wallet[];
+  paymentOptions?: SubscriptionPaymentOption[];
   onChanged: () => void;
 }) {
   const router = useRouter();
@@ -73,7 +79,24 @@ export function BotCard({
   const selectedWallet = payWallets.find((w) => w.symbol === effectivePayWalletSymbol);
   const usdRate = selectedWallet?.usdRate ?? null;
 
-  const isSubscribed = subscription && new Date(subscription.expiresAt) > new Date();
+  // Subscribing pays the company's own address for the chosen token, not
+  // any of the user's wallets, so this is a separate token list and symbol.
+  const paySymbols = paymentOptions ?? [];
+  const [paySymbol, setPaySymbol] = useState("");
+  const effectivePaySymbol = paySymbol || paySymbols[0]?.symbol || "";
+  const selectedPayOption = paySymbols.find((o) => o.symbol === effectivePaySymbol);
+  const payUsdRate = selectedPayOption?.usdRate ?? null;
+  const [txHash, setTxHash] = useState("");
+
+  const feeUsd = term === "SIX_MONTHS" ? (plan.pricing["6mo"] ?? null) : (plan.pricing["1yr"] ?? null);
+  const payTokenAmount = feeUsd != null && payUsdRate != null && payUsdRate > 0 ? feeUsd / payUsdRate : null;
+
+  const isSubscribed =
+    !!subscription &&
+    subscription.status === "ACTIVE" &&
+    subscription.expiresAt != null &&
+    new Date(subscription.expiresAt) > new Date();
+  const isPending = subscription?.status === "PENDING";
 
   function handleUsdAmountChange(next: string) {
     setPrincipal(next);
@@ -98,12 +121,13 @@ export function BotCard({
   async function handleSubscribe() {
     setSubmitting(true);
     try {
-      await subscriptionsApi.subscribe(plan.id, term, effectivePayWalletSymbol);
-      toast.success(`Subscribed to ${plan.name}`);
+      await subscriptionsApi.subscribe(plan.id, term, effectivePaySymbol, txHash || undefined);
+      toast.success("Payment submitted, awaiting confirmation");
       setOpen(false);
+      setTxHash("");
       onChanged();
     } catch (error) {
-      showFundableError(error, "Subscription failed", router);
+      toast.error(error instanceof ApiError ? error.message : "Subscription failed");
     } finally {
       setSubmitting(false);
     }
@@ -145,6 +169,10 @@ export function BotCard({
             <Badge className="absolute top-3 right-3 gap-1 border-0 bg-status-good/90 text-background">
               <CheckCircle2 className="size-3" /> Subscribed
             </Badge>
+          ) : isPending ? (
+            <Badge className="absolute top-3 right-3 gap-1 border-0 bg-status-warning/90 text-background">
+              <Clock className="size-3" /> Payment pending
+            </Badge>
           ) : null}
         </div>
       ) : null}
@@ -159,18 +187,26 @@ export function BotCard({
           </div>
           {(!image || imageFailed) && isSubscribed ? (
             <Badge className="border-0 bg-status-good/15 text-status-good">Subscribed</Badge>
+          ) : (!image || imageFailed) && isPending ? (
+            <Badge className="border-0 bg-status-warning/15 text-status-warning">Payment pending</Badge>
           ) : null}
         </div>
 
         <Dialog open={open} onOpenChange={setOpen}>
           <div className="border-t border-hairline pt-4">
-            <DialogTrigger
-              render={
-                <Button size="lg" className="w-full brand-gradient text-background hover:opacity-90">
-                  {isSubscribed ? "Place a trade" : "Subscribe"}
-                </Button>
-              }
-            />
+            {isPending ? (
+              <Button size="lg" className="w-full" variant="outline" disabled>
+                Awaiting confirmation
+              </Button>
+            ) : (
+              <DialogTrigger
+                render={
+                  <Button size="lg" className="w-full brand-gradient text-background hover:opacity-90">
+                    {isSubscribed ? "Place a trade" : "Subscribe"}
+                  </Button>
+                }
+              />
+            )}
           </div>
           <DialogContent>
             <DialogHeader>
@@ -252,22 +288,51 @@ export function BotCard({
                 </Field>
 
                 <Field>
-                  <FieldLabel>Pay from</FieldLabel>
-                  <WalletSelect wallets={payWallets} value={effectivePayWalletSymbol} onChange={setPayWalletSymbol} />
-                  <FieldDescription>
-                    The subscription fee is charged in USD value from whichever wallet you pick here.
-                  </FieldDescription>
+                  <FieldLabel>Pay with</FieldLabel>
+                  <PaymentAssetSelect options={paySymbols} value={effectivePaySymbol} onChange={setPaySymbol} />
+                  {feeUsd != null ? (
+                    <FieldDescription>
+                      {payTokenAmount != null
+                        ? `${payTokenAmount.toFixed(8)} ${currencyLabel(effectivePaySymbol)} `
+                        : ""}
+                      (${feeUsd.toLocaleString()}) for the {term === "SIX_MONTHS" ? "6 month" : "1 year"} term.
+                    </FieldDescription>
+                  ) : null}
+                </Field>
+
+                {selectedPayOption ? (
+                  <Field>
+                    <FieldLabel>Send payment to</FieldLabel>
+                    <Input readOnly value={selectedPayOption.address} />
+                    <div className="mt-2 flex w-fit items-center justify-center rounded-xl border border-hairline bg-background p-3">
+                      <QRCodeSVG value={selectedPayOption.address} size={128} />
+                    </div>
+                    <FieldDescription>
+                      Send only {currencyLabel(effectivePaySymbol)} to this address, then submit below. Your
+                      subscription activates once the payment is confirmed.
+                    </FieldDescription>
+                  </Field>
+                ) : (
+                  <FieldDescription>No token is currently accepted for payment, check back shortly.</FieldDescription>
+                )}
+
+                <Field>
+                  <FieldLabel htmlFor="txHash">Transaction hash (optional)</FieldLabel>
+                  <Input id="txHash" value={txHash} onChange={(e) => setTxHash(e.target.value)} />
                 </Field>
               </>
             )}
 
             <DialogFooter>
               <Button
-                disabled={submitting || !effectivePayWalletSymbol || (isSubscribed && !principal)}
+                disabled={
+                  submitting ||
+                  (isSubscribed ? !effectivePayWalletSymbol || !principal : !effectivePaySymbol)
+                }
                 className="w-full brand-gradient text-background hover:opacity-90"
                 onClick={isSubscribed ? handlePlaceTrade : handleSubscribe}
               >
-                {submitting ? "Working…" : isSubscribed ? "Place trade" : "Subscribe"}
+                {submitting ? "Working…" : isSubscribed ? "Place trade" : "I've sent the payment"}
               </Button>
             </DialogFooter>
           </DialogContent>

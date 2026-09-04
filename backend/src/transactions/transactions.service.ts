@@ -15,6 +15,7 @@ import {
 } from '../database/entities';
 import { MailService } from '../mail/mail.service';
 import { PricesService } from '../prices/prices.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 
 @Injectable()
 export class TransactionsService {
@@ -26,6 +27,7 @@ export class TransactionsService {
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly mailService: MailService,
     private readonly pricesService: PricesService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   create(data: Partial<Transaction>) {
@@ -81,6 +83,8 @@ export class TransactionsService {
   }
 
   async confirm(id: string, adminId: string, note?: string) {
+    let activatedSubscriptionId: string | null = null;
+
     const confirmed = await this.dataSource.transaction(async (manager) => {
       const txRepo = manager.getRepository(Transaction);
       const walletRepo = manager.getRepository(Wallet);
@@ -103,6 +107,16 @@ export class TransactionsService {
             .toFixed(8);
           await walletRepo.save(wallet);
         }
+      }
+
+      // Subscription payments likewise only activate the subscription once
+      // an admin confirms the company address actually received it.
+      if (tx.type === TransactionType.SUBSCRIPTION && tx.relatedSubscriptionId) {
+        const activated = await this.subscriptionsService.activatePendingSubscription(
+          tx.relatedSubscriptionId,
+          manager,
+        );
+        if (activated) activatedSubscriptionId = activated.id;
       }
 
       tx.status = TransactionStatus.COMPLETED;
@@ -130,6 +144,8 @@ export class TransactionsService {
         confirmed.currencySymbol,
         confirmed.usdEquivalent,
       );
+    } else if (activatedSubscriptionId) {
+      await this.subscriptionsService.notifyActivated(activatedSubscriptionId);
     }
 
     return confirmed;
@@ -157,6 +173,15 @@ export class TransactionsService {
             .toFixed(8);
           await walletRepo.save(wallet);
         }
+      }
+
+      // Subscription requests never touched a wallet, so rejecting one just
+      // cancels the subscription it was quoting a fee for.
+      if (tx.type === TransactionType.SUBSCRIPTION && tx.relatedSubscriptionId) {
+        await this.subscriptionsService.cancelPendingSubscription(
+          tx.relatedSubscriptionId,
+          manager,
+        );
       }
 
       tx.status = TransactionStatus.CANCELLED;

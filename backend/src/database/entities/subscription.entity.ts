@@ -47,11 +47,16 @@ export class Subscription {
   })
   status: SubscriptionStatus;
 
+  // Set (and reset) to the activation moment, not the request moment, so a
+  // PENDING subscription's term only starts counting once its payment is
+  // confirmed.
   @CreateDateColumn({ type: 'timestamptz' })
   startedAt: Date;
 
-  @Column({ type: 'timestamptz' })
-  expiresAt: Date;
+  // Null while PENDING, the term hasn't started until an admin confirms the
+  // payment transaction.
+  @Column({ type: 'timestamptz', nullable: true })
+  expiresAt: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

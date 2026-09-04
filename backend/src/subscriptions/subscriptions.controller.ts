@@ -14,6 +14,11 @@ export class SubscriptionsController {
     return this.subscriptionsService.findForUser(userId);
   }
 
+  @Get('payment-options')
+  paymentOptions() {
+    return this.subscriptionsService.paymentOptions();
+  }
+
   @RequireApproved()
   @Post()
   subscribe(@CurrentUser('id') userId: string, @Body() dto: SubscribeDto) {
@@ -21,7 +26,8 @@ export class SubscriptionsController {
       userId,
       dto.planId,
       dto.term as PlanTerm,
-      dto.walletSymbol,
+      dto.symbol,
+      dto.txHash,
     );
   }
 }

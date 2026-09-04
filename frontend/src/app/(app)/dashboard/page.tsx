@@ -65,7 +65,9 @@ export default function DashboardPage() {
   const recentTransactions = transactions
     ? [...transactions].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 6)
     : [];
-  const activeSubscriptions = subscriptions?.filter((s) => new Date(s.expiresAt) > new Date()) ?? [];
+  const activeSubscriptions =
+    subscriptions?.filter((s) => s.status === "ACTIVE" && s.expiresAt != null && new Date(s.expiresAt) > new Date()) ??
+    [];
   // Includes both the one-time subscription bonus and every ongoing profit
   // commission, not just what's recorded on the Referral row itself.
   const totalReferralEarnings = sumByType(transactions ?? [], "REFERRAL_BONUS");

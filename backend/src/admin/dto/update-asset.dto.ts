@@ -12,4 +12,8 @@ export class UpdateAssetDto {
   @IsOptional()
   @IsInt()
   sortOrder?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  paymentsEnabled?: boolean;
 }

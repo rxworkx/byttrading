@@ -73,7 +73,7 @@ export class InvestmentsService {
       where: { userId, planId, status: SubscriptionStatus.ACTIVE },
       order: { createdAt: 'DESC' },
     });
-    if (!subscription || subscription.expiresAt < new Date()) {
+    if (!subscription || !subscription.expiresAt || subscription.expiresAt < new Date()) {
       throw new BadRequestException(
         'You need an active subscription to this bot before trading',
       );

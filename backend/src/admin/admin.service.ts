@@ -591,6 +591,7 @@ export class AdminService {
     if (dto.enabled !== undefined) asset.enabled = dto.enabled;
     if (dto.showInWalletList !== undefined) asset.showInWalletList = dto.showInWalletList;
     if (dto.sortOrder !== undefined) asset.sortOrder = dto.sortOrder;
+    if (dto.paymentsEnabled !== undefined) asset.paymentsEnabled = dto.paymentsEnabled;
 
     return this.assetRepo.save(asset);
   }

@@ -70,8 +70,8 @@ function TradingContent() {
   }
 
   const activeSubscriptions = (subscriptions ?? [])
-    .filter((s) => new Date(s.expiresAt) > new Date())
-    .sort((a, b) => new Date(b.expiresAt).getTime() - new Date(a.expiresAt).getTime());
+    .filter((s) => s.status === "ACTIVE" && s.expiresAt != null && new Date(s.expiresAt) > new Date())
+    .sort((a, b) => new Date(b.expiresAt!).getTime() - new Date(a.expiresAt!).getTime());
 
   const filteredInvestments = useMemo(() => {
     const query = search.trim().toLowerCase();

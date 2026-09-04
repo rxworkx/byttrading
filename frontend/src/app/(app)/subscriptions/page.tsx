@@ -10,6 +10,7 @@ import {
   walletsApi,
   type InvestmentPlan,
   type Subscription,
+  type SubscriptionPaymentOption,
   type Wallet,
 } from "@/lib/dashboard-api";
 import { bots } from "@/lib/site-config";
@@ -19,7 +20,7 @@ const steps = [
   {
     icon: Layers,
     title: "Subscribe to a bot",
-    description: "Every card below is a plan. Subscribe once for a 6 month or 1 year term to unlock trading with it.",
+    description: "Every card below is a plan. Pay the term fee to our payment address in a token of your choice, no wallet balance needed.",
   },
   {
     icon: Lock,
@@ -37,18 +38,23 @@ export default function SubscriptionsPage() {
   const [plans, setPlans] = useState<InvestmentPlan[] | null>(null);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [paymentOptions, setPaymentOptions] = useState<SubscriptionPaymentOption[]>([]);
 
   const load = useCallback(() => {
     plansApi.list().then(setPlans);
     subscriptionsApi.mine().then(setSubscriptions);
     walletsApi.list().then(setWallets);
+    subscriptionsApi.paymentOptions().then(setPaymentOptions);
   }, []);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  const activeSubscriptions = subscriptions.filter((s) => new Date(s.expiresAt) > new Date());
+  const activeSubscriptions = subscriptions.filter(
+    (s) => s.status === "ACTIVE" && s.expiresAt != null && new Date(s.expiresAt) > new Date(),
+  );
+  const pendingSubscriptions = subscriptions.filter((s) => s.status === "PENDING");
 
   return (
     <div className="space-y-8">
@@ -89,14 +95,39 @@ export default function SubscriptionsPage() {
                   image={bot?.image}
                   tagline={bot?.tagline}
                   wallets={wallets}
+                  paymentOptions={paymentOptions}
                   subscription={subscriptions
                     .filter((s) => s.planId === plan.id)
-                    .sort((a, b) => new Date(b.expiresAt).getTime() - new Date(a.expiresAt).getTime())[0]}
+                    .sort((a, b) => {
+                      // A live (or awaiting-payment) subscription always wins
+                      // over an old expired/cancelled one for the same plan,
+                      // regardless of which has the later timestamp.
+                      const rank = (s: Subscription) => (s.status === "PENDING" || s.status === "ACTIVE" ? 0 : 1);
+                      if (rank(a) !== rank(b)) return rank(a) - rank(b);
+                      return new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime();
+                    })[0]}
                   onChanged={load}
                 />
               );
             })}
       </div>
+
+      {pendingSubscriptions.length > 0 ? (
+        <div>
+          <h2 className="text-sm font-semibold text-muted-foreground">Awaiting payment confirmation</h2>
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {pendingSubscriptions.map((s) => (
+              <div key={s.id} className="rounded-2xl border border-hairline bg-surface p-5">
+                <p className="font-medium">{s.plan.name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {s.term === "SIX_MONTHS" ? "6 month term" : "1 year term"}, ${s.feePaidUsd} fee awaiting
+                  confirmation
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       {activeSubscriptions.length > 0 ? (
         <div>
@@ -107,7 +138,7 @@ export default function SubscriptionsPage() {
                 <p className="font-medium">{s.plan.name}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {s.term === "SIX_MONTHS" ? "6 month term" : "1 year term"}, renews{" "}
-                  {formatDate(s.expiresAt)}
+                  {formatDate(s.expiresAt!)}
                 </p>
               </div>
             ))}

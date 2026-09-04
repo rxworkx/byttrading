@@ -222,12 +222,14 @@ export interface AdminAsset {
   enabled: boolean;
   showInWalletList: boolean;
   sortOrder: number;
+  paymentsEnabled: boolean;
 }
 
 export interface UpdateAssetPayload {
   enabled?: boolean;
   showInWalletList?: boolean;
   sortOrder?: number;
+  paymentsEnabled?: boolean;
 }
 
 export const adminAssetsApi = {

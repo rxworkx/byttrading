@@ -3,6 +3,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import Decimal from 'decimal.js';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import {
+  Asset,
   Notification,
   NotificationType,
   PlanTerm,
@@ -40,6 +41,8 @@ export class SubscriptionsService {
   constructor(
     @InjectRepository(Subscription)
     private readonly subscriptionRepo: Repository<Subscription>,
+    @InjectRepository(Asset)
+    private readonly assetRepo: Repository<Asset>,
     private readonly plansService: PlansService,
     private readonly settingsService: SettingsService,
     private readonly walletsService: WalletsService,
@@ -55,11 +58,42 @@ export class SubscriptionsService {
     });
   }
 
+  // Tokens a user can pay a subscription fee with right now: opted in by an
+  // admin (Asset.paymentsEnabled) and with a shared company deposit address
+  // actually configured, otherwise there's nothing to show them to pay into.
+  async paymentOptions() {
+    const assets = await this.assetRepo.find({
+      where: { paymentsEnabled: true },
+      order: { sortOrder: 'ASC' },
+    });
+
+    const options = await Promise.all(
+      assets.map(async (asset) => {
+        const address = await this.walletsService.getDepositAddress(asset.symbol);
+        if (!address) return null;
+        return {
+          symbol: asset.symbol,
+          name: asset.name,
+          address,
+          usdRate: this.walletsService.getUsdRateForAsset(asset),
+        };
+      }),
+    );
+
+    return options.filter((option): option is NonNullable<typeof option> => option != null);
+  }
+
+  // Quotes the fee and records the request against the company's shared
+  // deposit address for that token, nothing is debited from the user's own
+  // wallet. The subscription sits PENDING until an admin confirms the
+  // payment transaction (see TransactionsService.confirm), which is what
+  // actually activates it.
   async subscribe(
     userId: string,
     planId: string,
     term: PlanTerm,
-    walletSymbol: string,
+    symbol: string,
+    txHash?: string,
   ) {
     const plan = await this.plansService.findById(planId);
     const priceKey = TERM_PRICING_KEY[term];
@@ -67,19 +101,19 @@ export class SubscriptionsService {
     if (fee == null)
       throw new BadRequestException('This plan does not offer that term');
 
-    const subscription = await this.dataSource.transaction(async (manager) => {
-      const feeDecimal = new Decimal(fee);
-      const debit = await this.walletsService.debitWalletUsdValue(
-        userId,
-        walletSymbol,
-        feeDecimal,
-        manager,
-      );
+    const asset = await this.assetRepo.findOneBy({ symbol, paymentsEnabled: true });
+    if (!asset)
+      throw new BadRequestException('That token is not accepted for subscription payments');
 
-      const now = new Date();
-      const expiresAt = new Date(
-        now.getTime() + TERM_DAYS[term] * 24 * 60 * 60 * 1000,
-      );
+    const address = await this.walletsService.getDepositAddress(symbol);
+    if (!address)
+      throw new BadRequestException('No payment address is configured for that token');
+
+    const feeDecimal = new Decimal(fee);
+    const rate = this.walletsService.getUsdRateForAsset(asset);
+    const tokenAmount = rate != null && rate > 0 ? feeDecimal.div(rate) : feeDecimal;
+
+    return this.dataSource.transaction(async (manager) => {
       const subscriptionRepo = manager.getRepository(Subscription);
       const subscription = await subscriptionRepo.save(
         subscriptionRepo.create({
@@ -87,8 +121,8 @@ export class SubscriptionsService {
           planId: plan.id,
           term,
           feePaidUsd: feeDecimal.toFixed(2),
-          status: SubscriptionStatus.ACTIVE,
-          expiresAt,
+          status: SubscriptionStatus.PENDING,
+          expiresAt: null,
         }),
       );
 
@@ -96,34 +130,74 @@ export class SubscriptionsService {
       await txRepo.save(
         txRepo.create({
           userId,
-          walletId: debit.wallet.id,
           type: TransactionType.SUBSCRIPTION,
-          status: TransactionStatus.COMPLETED,
-          amount: debit.tokenAmount,
-          currencySymbol: debit.wallet.symbol,
-          usdEquivalent: debit.usdAmount,
-          confirmedAt: now,
+          status: TransactionStatus.PENDING,
+          amount: tokenAmount.toFixed(8),
+          currencySymbol: symbol,
+          usdEquivalent: feeDecimal.toFixed(2),
+          destinationAddress: address,
+          txHash: txHash ?? null,
+          relatedSubscriptionId: subscription.id,
         }),
       );
 
-      await this.maybeCreditReferralBonus(manager, userId, feeDecimal);
-
       return subscription;
     });
+  }
 
-    // Sent after the transaction commits, an SMTP hiccup should never roll
-    // back a real charge.
-    const user = await this.dataSource.getRepository(User).findOneBy({ id: userId });
+  // Called by TransactionsService.confirm, inside the same DB transaction,
+  // once an admin confirms the payment transaction a subscribe() request
+  // created. Starts the term window now (not at request time) and folds in
+  // the referral bonus the same way an instant subscribe used to.
+  async activatePendingSubscription(subscriptionId: string, manager: EntityManager) {
+    const subscriptionRepo = manager.getRepository(Subscription);
+    const subscription = await subscriptionRepo.findOneBy({ id: subscriptionId });
+    if (!subscription || subscription.status !== SubscriptionStatus.PENDING) return null;
+
+    const now = new Date();
+    subscription.status = SubscriptionStatus.ACTIVE;
+    subscription.startedAt = now;
+    subscription.expiresAt = new Date(
+      now.getTime() + TERM_DAYS[subscription.term] * 24 * 60 * 60 * 1000,
+    );
+    await subscriptionRepo.save(subscription);
+
+    await this.maybeCreditReferralBonus(
+      manager,
+      subscription.userId,
+      new Decimal(subscription.feePaidUsd),
+    );
+
+    return subscription;
+  }
+
+  // Called by TransactionsService.reject when the payment transaction never
+  // pans out.
+  async cancelPendingSubscription(subscriptionId: string, manager: EntityManager) {
+    const subscriptionRepo = manager.getRepository(Subscription);
+    const subscription = await subscriptionRepo.findOneBy({ id: subscriptionId });
+    if (!subscription || subscription.status !== SubscriptionStatus.PENDING) return;
+    subscription.status = SubscriptionStatus.CANCELLED;
+    await subscriptionRepo.save(subscription);
+  }
+
+  // Sent after activatePendingSubscription's transaction commits, an SMTP
+  // hiccup should never roll back a confirmed payment.
+  async notifyActivated(subscriptionId: string) {
+    const subscription = await this.subscriptionRepo.findOneBy({ id: subscriptionId });
+    if (!subscription) return;
+    const [plan, user] = await Promise.all([
+      this.plansService.findById(subscription.planId),
+      this.dataSource.getRepository(User).findOneBy({ id: subscription.userId }),
+    ]);
     if (user) {
       await this.mailService.sendSubscriptionConfirmedEmail(
         user.email,
         user.firstName,
         plan.name,
-        TERM_LABEL[term],
+        TERM_LABEL[subscription.term],
       );
     }
-
-    return subscription;
   }
 
   private async maybeCreditReferralBonus(

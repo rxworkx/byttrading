@@ -10,6 +10,7 @@ import { adminSubscriptionsApi, type AdminSubscription } from "@/lib/admin-api";
 import { formatDateTime, formatLabel } from "@/lib/utils";
 
 const statusStyles: Record<AdminSubscription["status"], string> = {
+  PENDING: "bg-status-warning/15 text-status-warning",
   ACTIVE: "bg-status-good/15 text-status-good",
   EXPIRED: "bg-secondary text-muted-foreground",
   CANCELLED: "bg-destructive/15 text-destructive",
@@ -72,7 +73,9 @@ function SubscriptionsContent() {
                     <Badge className={`border-0 ${statusStyles[sub.status]}`}>{formatLabel(sub.status)}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{formatDateTime(sub.startedAt)}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDateTime(sub.expiresAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {sub.expiresAt ? formatDateTime(sub.expiresAt) : "Not yet"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

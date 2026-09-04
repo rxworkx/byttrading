@@ -199,9 +199,16 @@ export class WalletsService {
   }
 
   getUsdRate(wallet: Wallet): number | null {
-    if (wallet.fixedRateUsd != null) return Number(wallet.fixedRateUsd);
-    if (!wallet.apiId) return null;
-    return this.pricesService.getPrice(wallet.apiId);
+    return this.getUsdRateForAsset(wallet);
+  }
+
+  // Same fixedRateUsd/apiId lookup as getUsdRate, but for anything carrying
+  // those two fields rather than a user's Wallet row specifically (e.g. an
+  // Asset, when quoting a company payment that has no wallet behind it).
+  getUsdRateForAsset(asset: { fixedRateUsd: string | null; apiId: string | null }): number | null {
+    if (asset.fixedRateUsd != null) return Number(asset.fixedRateUsd);
+    if (!asset.apiId) return null;
+    return this.pricesService.getPrice(asset.apiId);
   }
 
   // Charges a USD-denominated cost (subscription fees, placing a trade,

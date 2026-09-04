@@ -49,6 +49,7 @@ function TokenRow({ token, onSaved }: { token: TokenRowData; onSaved: () => void
   const [address, setAddress] = useState(token.address ?? "");
   const [enabled, setEnabled] = useState(token.enabled);
   const [showInWalletList, setShowInWalletList] = useState(token.showInWalletList);
+  const [paymentsEnabled, setPaymentsEnabled] = useState(token.paymentsEnabled);
   const [sortOrder, setSortOrder] = useState(String(token.sortOrder));
   const [saving, setSaving] = useState(false);
   const icon = assetIconSrc(token.symbol);
@@ -57,6 +58,7 @@ function TokenRow({ token, onSaved }: { token: TokenRowData; onSaved: () => void
     address !== (token.address ?? "") ||
     enabled !== token.enabled ||
     showInWalletList !== token.showInWalletList ||
+    paymentsEnabled !== token.paymentsEnabled ||
     Number(sortOrder) !== token.sortOrder;
 
   async function save() {
@@ -68,10 +70,12 @@ function TokenRow({ token, onSaved }: { token: TokenRowData; onSaved: () => void
           : Promise.resolve(),
         enabled !== token.enabled ||
         showInWalletList !== token.showInWalletList ||
+        paymentsEnabled !== token.paymentsEnabled ||
         Number(sortOrder) !== token.sortOrder
           ? adminAssetsApi.update(token.symbol, {
               enabled,
               showInWalletList,
+              paymentsEnabled,
               sortOrder: Number(sortOrder),
             })
           : Promise.resolve(),
@@ -125,6 +129,13 @@ function TokenRow({ token, onSaved }: { token: TokenRowData; onSaved: () => void
           Listed in wallet picker
         </label>
         <label className="flex items-center gap-2 text-sm">
+          <Switch
+            checked={paymentsEnabled}
+            onCheckedChange={(checked) => setPaymentsEnabled(checked === true)}
+          />
+          Company payments
+        </label>
+        <label className="flex items-center gap-2 text-sm">
           Sort
           <Input
             type="number"
@@ -176,7 +187,8 @@ export default function AdminTokensPage() {
           settings. Users see the deposit address on their deposit page and QR code, unless they have a personal
           override set from their user detail page. Disabling a token pauses its price refresh and blocks new
           wallets in it, existing balances keep working. Unlisting only hides it from users who don&apos;t already
-          hold it.
+          hold it. Company payments controls whether this same shared address can also be paid into for platform
+          charges like bot subscriptions, needs an address set to actually appear as an option.
         </p>
       </div>
 

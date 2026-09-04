@@ -76,9 +76,20 @@ export interface Subscription {
   plan: InvestmentPlan;
   term: "SIX_MONTHS" | "ONE_YEAR";
   feePaidUsd: string;
-  status: "ACTIVE" | "EXPIRED" | "CANCELLED";
+  status: "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED";
   startedAt: string;
-  expiresAt: string;
+  // Null while PENDING: the term hasn't started until an admin confirms
+  // the payment.
+  expiresAt: string | null;
+}
+
+// A token the company accepts subscription payments in, with the shared
+// address to pay it into. Not tied to any user wallet or balance.
+export interface SubscriptionPaymentOption {
+  symbol: string;
+  name: string;
+  address: string;
+  usdRate: number | null;
 }
 
 export interface Investment {
@@ -165,8 +176,9 @@ export const plansApi = {
 
 export const subscriptionsApi = {
   mine: () => get<Subscription[]>("/subscriptions/me"),
-  subscribe: (planId: string, term: "SIX_MONTHS" | "ONE_YEAR", walletSymbol: string) =>
-    post<Subscription>("/subscriptions", { planId, term, walletSymbol }),
+  paymentOptions: () => get<SubscriptionPaymentOption[]>("/subscriptions/payment-options"),
+  subscribe: (planId: string, term: "SIX_MONTHS" | "ONE_YEAR", symbol: string, txHash?: string) =>
+    post<Subscription>("/subscriptions", { planId, term, symbol, txHash }),
 };
 
 export const investmentsApi = {

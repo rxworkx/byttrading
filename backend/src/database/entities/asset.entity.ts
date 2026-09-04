@@ -53,6 +53,14 @@ export class Asset {
   @Column({ type: 'int', default: 0 })
   sortOrder: number;
 
+  // Whether this asset's shared company deposit address (see
+  // AssetDepositAddress) can be paid into for platform charges like bot
+  // subscriptions, separate from `enabled`/`showInWalletList` which only
+  // govern user wallet balances. Off by default, an admin opts each token
+  // in from the Tokens page once its address is set.
+  @Column({ default: false })
+  paymentsEnabled: boolean;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 

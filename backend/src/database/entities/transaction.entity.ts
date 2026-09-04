@@ -13,6 +13,7 @@ import { TransactionStatus, TransactionType } from './enums';
 import { User } from './user.entity';
 import { Wallet } from './wallet.entity';
 import { Investment } from './investment.entity';
+import { Subscription } from './subscription.entity';
 
 @Entity('transactions')
 @Index(['type', 'status'])
@@ -87,6 +88,16 @@ export class Transaction {
   })
   @JoinColumn({ name: 'relatedInvestmentId' })
   investment: Investment | null;
+
+  // Set on the PENDING payment transaction created by a subscription
+  // request, so confirming/rejecting it can activate or cancel the
+  // subscription it's paying for.
+  @Column({ nullable: true, type: 'varchar' })
+  relatedSubscriptionId: string | null;
+
+  @ManyToOne(() => Subscription, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'relatedSubscriptionId' })
+  subscription: Subscription | null;
 
   @Column({ nullable: true, type: 'text' })
   adminNote: string | null;

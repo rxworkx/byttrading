@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
+  Asset,
   Notification,
   Referral,
   Subscription,
@@ -21,6 +22,7 @@ import { SubscriptionsController } from './subscriptions.controller';
       Transaction,
       Referral,
       Notification,
+      Asset,
     ]),
     PlansModule,
     SettingsModule,

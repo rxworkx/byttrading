@@ -1,4 +1,4 @@
-import { IsIn, IsString } from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 
 export class SubscribeDto {
   @IsString()
@@ -7,6 +7,11 @@ export class SubscribeDto {
   @IsIn(['SIX_MONTHS', 'ONE_YEAR'])
   term: 'SIX_MONTHS' | 'ONE_YEAR';
 
+  // Symbol of the company-accepted token the fee is being paid in.
   @IsString()
-  walletSymbol: string;
+  symbol: string;
+
+  @IsOptional()
+  @IsString()
+  txHash?: string;
 }

@@ -23,6 +23,10 @@ export enum PlanTerm {
 }
 
 export enum SubscriptionStatus {
+  // Requested but not yet paid: the fee has been quoted against a company
+  // payment address and is awaiting an admin to confirm the incoming
+  // payment. The term window hasn't started yet.
+  PENDING = 'PENDING',
   ACTIVE = 'ACTIVE',
   EXPIRED = 'EXPIRED',
   CANCELLED = 'CANCELLED',
