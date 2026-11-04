@@ -16,7 +16,7 @@ export function Footer() {
           <div>
             <Logo size="md" />
             <p className="mt-4 max-w-xs text-base leading-relaxed text-muted-foreground">
-              Automated trading bots that put your capital to work on fixed, transparent cycles. Deposit,
+              Automated trading bots that put your capital to work with clear, transparent strategies. Deposit,
               subscribe, trade, and watch your balance grow with full visibility at every step.
             </p>
           </div>

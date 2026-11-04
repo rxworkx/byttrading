@@ -3,8 +3,8 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const recap = [
-  "3 fixed cycle trading bots",
-  "Reviewed fund movements",
+  "3 automated trading bots",
+  "Live chat support",
   "Two factor login, optional",
   "Live CoinGecko pricing",
 ];

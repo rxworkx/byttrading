@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDownToLine, ArrowRight, ShieldCheck, Repeat, Scale, Activity, Wallet } from "lucide-react";
+import { ArrowDownToLine, ArrowRight, ShieldCheck, Repeat, Scale, Activity, Wallet, MessagesSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const candles = [
@@ -89,10 +89,10 @@ const items = [
     featured: false,
   },
   {
-    icon: ShieldCheck,
-    title: "Reviewed fund movements",
+    icon: MessagesSquare,
+    title: "Live chat support",
     description:
-      "Deposits and withdrawals pass through admin review before funds move, a real check against mistakes rather than an instant transfer with no one watching.",
+      "Live chat is built into the site, so help is only a click away from any page.",
     span: "lg:col-span-4",
     featured: false,
   },

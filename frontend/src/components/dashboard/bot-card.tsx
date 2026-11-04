@@ -248,7 +248,7 @@ export function BotCard({
                     This amount is debited from the wallet above the moment the trade starts, and locked
                     together with any profit until you end the trade.
                     {plan.term
-                      ? ` Accrues every ${plan.payFrequency} until the ${plan.term} cycle completes.`
+                      ? ` Accrues every ${plan.payFrequency} for ${plan.term}.`
                       : ` Accrues profit every ${plan.payFrequency}.`}
                   </FieldDescription>
                 </Field>

@@ -70,7 +70,7 @@ export default function DepositPage() {
     <div className="mx-auto max-w-md">
       <h1 className="text-2xl font-semibold">Deposit</h1>
       <p className="mt-1 text-base text-muted-foreground">
-        Send funds to your wallet, then submit the details below for review.
+        Send funds to your wallet, then submit the details below.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">

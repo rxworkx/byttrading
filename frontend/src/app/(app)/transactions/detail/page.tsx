@@ -91,8 +91,8 @@ function TransactionDetailContent() {
         <div className="flex items-center gap-3 rounded-2xl border border-hairline bg-surface p-6">
           <Clock className="size-5 shrink-0 text-status-warning" />
           <p className="text-sm text-muted-foreground">
-            Awaiting admin review. Your balance was already debited and will be refunded automatically if this
-            is rejected.
+            Your withdrawal is pending. Your balance was already debited and will be refunded
+            automatically if it cannot be completed.
           </p>
         </div>
       ) : null}

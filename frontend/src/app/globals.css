@@ -291,3 +291,59 @@
     border-color: var(--surface-light-hairline);
   }
 }
+
+/* Google Translate: a small custom control, with Google's own bar and popups hidden. */
+.byt-translate .goog-te-gadget {
+  margin: 0;
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+}
+.byt-translate .goog-te-gadget > span {
+  display: none;
+}
+.byt-translate .goog-te-gadget > div {
+  display: block;
+  height: 20px;
+}
+.byt-translate .goog-te-combo {
+  display: block;
+  height: 20px;
+  width: 132px;
+  /* Google's stylesheet loads later and sets its own margin. */
+  margin: 0 !important;
+  padding: 0 26px 0 8px;
+  appearance: none;
+  border: 0;
+  border-radius: 6px;
+  outline: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 20px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
+}
+.byt-translate .goog-te-combo:focus-visible {
+  outline: 1px solid var(--primary);
+  outline-offset: 1px;
+}
+.byt-translate .goog-te-combo option {
+  background: #2b2b2b;
+  color: #fff;
+}
+body > .skiptranslate,
+iframe.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+font.goog-text-highlight,
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  background: none !important;
+  box-shadow: none !important;
+}

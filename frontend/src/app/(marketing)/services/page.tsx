@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Activity, Bot, Mail, MessageCircle, Repeat, ShieldCheck, Wallet } from "lucide-react";
+import { Activity, Bot, Mail, MessageCircle, Repeat, Wallet, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/lib/site-config";
 
@@ -13,7 +13,7 @@ const services = [
     icon: Repeat,
     title: "Automated bot trading",
     description:
-      "Subscribe to AetherGuard, QuantumPulse, or TitanForge and let a fixed cycle strategy trade for you, with target rates and cycle lengths published before you ever commit.",
+      "Subscribe to AetherGuard, QuantumPulse, or TitanForge and let an automated strategy trade for you, with target rates and pricing published before you ever commit.",
     span: "lg:col-span-7",
     featured: true,
   },
@@ -26,10 +26,10 @@ const services = [
     featured: false,
   },
   {
-    icon: ShieldCheck,
-    title: "Reviewed withdrawals",
+    icon: Languages,
+    title: "Available in your language",
     description:
-      "Every withdrawal passes admin review before it settles, and two factor login is available whenever you want an extra layer of protection.",
+      "Switch the site into your preferred language from the selector at the top of any page, on desktop or mobile.",
     span: "lg:col-span-4",
     featured: false,
   },

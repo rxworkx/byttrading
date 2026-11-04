@@ -6,6 +6,7 @@ import { Menu, LayoutGrid, Wrench, Cpu, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/layout/logo";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { mainNav } from "@/lib/site-config";
 import { getMe, type PublicUser } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -48,7 +49,7 @@ export function Navbar() {
         scrolled ? "border-hairline bg-background" : "border-transparent bg-black/40",
       )}
     >
-      <div className="mx-auto flex h-[86px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex h-[86px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 lg:max-[1520px]:max-w-none lg:max-[1520px]:pr-[152px]">
         <Logo size="md" wordmark={false} />
 
         {/* Pill nav and the login/signup buttons are grouped into one right
@@ -100,7 +101,7 @@ export function Navbar() {
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
             render={
-              <Button variant="ghost" size="icon-lg" className="md:hidden">
+              <Button variant="ghost" size="icon-lg" className="mt-2 md:hidden">
                 <Menu className="size-6" />
               </Button>
             }
@@ -162,6 +163,10 @@ export function Navbar() {
             </nav>
           </SheetContent>
         </Sheet>
+
+        {/* Right of Sign up on desktop. Wide screens have room in the margin, so
+            nothing moves. Narrower ones give up only the space it needs. */}
+        <LanguageSwitcher className="absolute top-0.5 right-4 sm:right-6 lg:top-1/2 lg:right-3 lg:-translate-y-1/2 min-[1520px]:left-[calc(100%-24px)]" />
       </div>
     </header>
   );

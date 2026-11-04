@@ -73,23 +73,6 @@ const PLANS: Array<
       'Aggressive & High Reward, higher targets for higher risk tolerance.',
     isActive: true,
   },
-  {
-    name: 'Test Plan (1 min)',
-    slug: 'test-plan-1min',
-    rateRange: '10-10',
-    rateNote: 'Dev/test only, fixed 10% per accrual.',
-    pricing: { '6mo': 1, '1yr': 1 },
-    term: '5 min',
-    payFrequency: '1 min',
-    payWalletFrequency: null,
-    minTerm: '0 days',
-    description:
-      'Dev/test plan: pays out every 1 minute and auto completes after 5 '
-      + 'minutes. minTerm is 0, so a trade on this plan can still be ended '
-      + 'early at any time. Disabled by default, enable from the admin plans page '
-      + 'only while testing.',
-    isActive: false,
-  },
 ];
 
 const SETTINGS: Array<
@@ -280,15 +263,13 @@ async function main() {
   }
   console.log(`Seeded ${SETTINGS.length} settings.`);
 
-  const DEFAULT_ADMIN_USERNAME = 'Jangolina';
-  const DEFAULT_ADMIN_PASSWORD = 'Jangolina-999#';
-
   const userRepo = dataSource.getRepository(User);
   const walletAccountRepo = dataSource.getRepository(WalletAccount);
   const walletRepo = dataSource.getRepository(Wallet);
 
   const adminEmail = process.env.SEED_ADMIN_EMAIL;
   const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+  const adminUsername = process.env.SEED_ADMIN_USERNAME;
 
   let admin: User | null = null;
 
@@ -299,6 +280,7 @@ async function main() {
       admin = await userRepo.save(
         userRepo.create({
           email: adminEmail,
+          username: adminUsername,
           passwordHash,
           firstName: 'BYT',
           lastName: 'Admin',
@@ -309,33 +291,19 @@ async function main() {
       );
       console.log(`Created admin user ${adminEmail}.`);
     }
-    // The simplified admin login needs a username. Backfill it onto this
-    // account without touching whatever password is already configured.
-    if (!admin.username) {
-      admin.username = DEFAULT_ADMIN_USERNAME;
-      admin.passwordHash = await argon2.hash(DEFAULT_ADMIN_PASSWORD);
+    // The simplified admin login needs a username. An existing account keeps
+    // its password.
+    if (!admin.username && adminUsername) {
+      admin.username = adminUsername;
       admin = await userRepo.save(admin);
-      console.log(`Set default admin username and password for ${adminEmail}.`);
+      console.log(`Set admin username for ${adminEmail}.`);
     }
   } else {
-    const existingAdmin = await userRepo.findOneBy({ role: Role.ADMIN });
-    if (existingAdmin) {
-      admin = existingAdmin;
-    } else {
-      const passwordHash = await argon2.hash(DEFAULT_ADMIN_PASSWORD);
-      admin = await userRepo.save(
-        userRepo.create({
-          email: 'jangolina@byttrading.local',
-          username: DEFAULT_ADMIN_USERNAME,
-          passwordHash,
-          firstName: 'BYT',
-          lastName: 'Admin',
-          role: Role.ADMIN,
-          isEmailVerified: true,
-          referralCode: generateReferralCode(),
-        }),
+    admin = await userRepo.findOneBy({ role: Role.ADMIN });
+    if (!admin) {
+      console.log(
+        'No admin created: set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD to create one.',
       );
-      console.log(`Created default admin user ${DEFAULT_ADMIN_USERNAME}.`);
     }
   }
 

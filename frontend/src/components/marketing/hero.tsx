@@ -47,9 +47,8 @@ export function Hero() {
             Bot Network
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Automated trading bots running fixed cycle strategies in financial markets, with
-            published rate ranges. A demonstrated track record of performance, visible the moment each
-            cycle completes.
+            Automated trading bots running rule based strategies in financial markets, with published
+            rate ranges. A demonstrated track record of performance, visible from your dashboard.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-nowrap">
             <Button

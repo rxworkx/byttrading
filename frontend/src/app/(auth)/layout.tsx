@@ -4,7 +4,7 @@ import { Logo } from "@/components/layout/logo";
 const highlights = [
   {
     icon: TrendingUp,
-    title: "Three fixed cycle bots",
+    title: "Three automated bots",
     description: "AetherGuard, QuantumPulse, and TitanForge, each with a published target rate range.",
   },
   {

@@ -3,3 +3,9 @@ node_modules
 .env
 
 /generated/prisma
+
+# Local SQLite database: holds real user data
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm

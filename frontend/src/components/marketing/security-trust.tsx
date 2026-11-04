@@ -7,7 +7,7 @@ const measures = [
   "Encrypted in transit",
   "Encrypted at rest",
   "Two factor login, optional",
-  "Withdrawals reviewed",
+  "Email verification, optional",
   "Short lived session tokens",
 ];
 
@@ -27,7 +27,7 @@ export function SecurityTrust() {
               connection to your account is <span className="text-primary">encrypted in transit</span>,
               and your data is <span className="text-primary">encrypted at rest</span>. Two factor login
               is <span className="text-primary">available whenever you want it</span>, never forced on
-              you. Every withdrawal is <span className="text-primary">reviewed before it settles</span>.
+              you. Login sessions use <span className="text-primary">short lived tokens</span>.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">

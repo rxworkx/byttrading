@@ -13,7 +13,7 @@ const pillars = [
     icon: Layers,
     title: "Three bots, three risk profiles",
     description:
-      "Instead of one opaque strategy, we run AetherGuard, QuantumPulse, and TitanForge side by side, each with its own published rate range and cycle length.",
+      "Instead of one opaque strategy, we run AetherGuard, QuantumPulse, and TitanForge side by side, each with its own published rate range and pricing.",
     span: "lg:col-span-7",
     featured: true,
   },
@@ -78,8 +78,8 @@ export default function AboutUsPage() {
                 <dd className="text-tabular mt-1 text-3xl font-bold">1</dd>
               </div>
               <div>
-                <dt className="text-sm text-white/60">Cycle lengths</dt>
-                <dd className="text-tabular mt-1 text-3xl font-bold">7 to 21 days</dd>
+                <dt className="text-sm text-white/60">Subscription terms</dt>
+                <dd className="text-tabular mt-1 text-3xl font-bold">6 or 12 months</dd>
               </div>
               <div>
                 <dt className="text-sm text-white/60">Company registration</dt>
@@ -106,10 +106,8 @@ export default function AboutUsPage() {
                 directly, instead of building their own infrastructure from scratch.
               </p>
               <p className="mt-6 text-base section-light-muted">
-                Every wallet, transaction, and trade cycle in your account is tracked in a single ledger.
-                Funds move through clearly defined states: available, locked in an active trade, or
-                pending admin review on deposit and withdrawal. Nothing moves silently, and nothing is
-                left for you to guess at. We hold ourselves to the same standard we would want from any
+                Your dashboard brings your bots, live prices, and account activity together in one place, on
+                desktop or mobile. We hold ourselves to the same standard we would want from any
                 platform handling our own money: clear terms, visible risk disclosures, and support that
                 actually responds.
               </p>

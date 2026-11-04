@@ -42,7 +42,7 @@ export default function RegulatoryStatusPage() {
 
       <h2>4. Updates to this page</h2>
       <p>
-        We review this page from time to time to keep it accurate. If anything material changes about how
+        We update this page from time to time to keep it accurate. If anything material changes about how
         BYT Trading operates or is structured, this page will be updated to reflect that, along with a
         revised date at the top.
       </p>

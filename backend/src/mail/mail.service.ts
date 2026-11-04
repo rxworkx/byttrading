@@ -77,6 +77,14 @@ export class MailService {
   }
 
   private async send(to: string, subject: string, contentHtml: string) {
+    // For local copies of real data: the scheduled sweeps and auth flows would
+    // otherwise email real customers from a dev machine. The body is logged so
+    // OTP and verification links stay usable.
+    if (this.config.get<string>('MAIL_DISABLED') === 'true') {
+      this.logger.log(`MAIL_DISABLED, not sending "${subject}" to ${to}`);
+      this.logger.debug(contentHtml);
+      return;
+    }
     try {
       const { error } = await this.resend.emails.send({
         from: this.from,
@@ -105,7 +113,11 @@ export class MailService {
     );
   }
 
-  async sendVerificationEmail(to: string, firstName: string, verifyUrl: string) {
+  async sendVerificationEmail(
+    to: string,
+    firstName: string,
+    verifyUrl: string,
+  ) {
     await this.send(
       to,
       'Verify your BYT Trading account',

@@ -15,13 +15,13 @@ const benefits = [
     number: "03",
     title: "Security on your schedule",
     description:
-      "Two factor login is available whenever you want it, and every deposit and withdrawal is admin reviewed for an added layer of account protection.",
+      "Two factor login is available whenever you want it, and short lived session tokens help keep your login secure.",
   },
   {
     number: "04",
     title: "Rewards that pay automatically",
     description:
-      "Referral rewards credit to your balance the moment someone you refer subscribes, no claim process or waiting on our end.",
+      "Referral rewards credit to your balance the moment someone you refer subscribes, nothing to claim and no waiting on our end.",
   },
 ];
 
@@ -36,7 +36,7 @@ export function Benefits() {
             BYT Trading was built around one idea: you should always know exactly where your money is,
             whether that is available, locked in a trade, or in transit, with nothing hidden. No single
             opaque algorithm decides your outcome either. Every bot publishes its own target rate range
-            and cycle length up front, so what you subscribe to is exactly what runs.
+            and pricing up front, so what you subscribe to is exactly what runs.
           </p>
         </div>
 

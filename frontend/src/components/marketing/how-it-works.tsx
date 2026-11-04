@@ -23,7 +23,7 @@ const steps = [
     step: "04",
     title: "Place a trade",
     description:
-      "Pick the subscribed bot you want to activate, choose which wallet to fund it from, and set the amount to trade. That amount is debited immediately and locked, together with any profit, for the fixed length of that bot's cycle.",
+      "Pick the subscribed bot you want to activate, choose which wallet to fund it from, and set the amount to trade. That amount is debited immediately and locked, together with any profit, for as long as the trade runs.",
   },
   {
     step: "05",
@@ -42,7 +42,7 @@ export function HowItWorks() {
     <section id="how-it-works" className="border-t border-hairline bg-surface/40">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold tracking-wide text-primary uppercase">The process</p>
+          <p className="text-sm font-semibold tracking-wide text-primary uppercase">Getting started</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">How it works</h2>
           <p className="mt-4 text-lg text-muted-foreground">
             From your first deposit to your first withdrawal, every step of the cycle stays visible in

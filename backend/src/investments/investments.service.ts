@@ -447,7 +447,10 @@ export class InvestmentsService {
       manager.getRepository(InvestmentPlan).findOneBy({ id: investment.planId }),
     ]);
     if (user && plan) {
-      await this.mailService.sendTradeCompletedEmail(
+      // Not awaited: this runs inside the caller's transaction, and waiting on
+      // the mail API here would hold up every other database query. send()
+      // handles its own errors, so this can't reject.
+      void this.mailService.sendTradeCompletedEmail(
         user.email,
         user.firstName,
         plan.name,

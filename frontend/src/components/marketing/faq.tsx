@@ -9,15 +9,15 @@ type Category = (typeof categories)[number];
 
 const faqs: { question: string; answer: string; category: Category }[] = [
   {
-    question: "How does a trading cycle work?",
+    question: "How does a trade work?",
     answer:
-      "When you start a trade, your chosen principal amount moves from the wallet you pick into a locked state tied to that bot's cycle length. Profit accrues within the bot's target rate range over the cycle. When the cycle ends, principal and profit release back to that same wallet automatically.",
+      "When you start a trade, your chosen principal amount moves from the wallet you pick into a locked balance. Profit accrues within the bot's target rate range. When the trade ends, principal and profit release back to that same wallet automatically.",
     category: "General",
   },
   {
     question: "Can I withdraw funds while a trade is running?",
     answer:
-      "No, principal and any accrued profit are locked for the duration of the cycle. Funds in your other wallets, or in the same wallet outside an active trade, remain available to withdraw.",
+      "No, principal and any accrued profit are locked for the duration of the trade. Funds in your other wallets, or in the same wallet outside an active trade, remain available to withdraw.",
     category: "General",
   },
   {
@@ -29,7 +29,7 @@ const faqs: { question: string; answer: string; category: Category }[] = [
   {
     question: "What is the difference between the three bots?",
     answer:
-      "AetherGuard targets steady, lower variance returns over a 7 day cycle. QuantumPulse balances risk and reward over 14 days. TitanForge targets the highest returns over a 21 day cycle for traders comfortable with more volatility.",
+      "AetherGuard targets steady, lower variance returns. QuantumPulse balances risk and reward. TitanForge targets the highest returns for traders comfortable with more volatility.",
     category: "General",
   },
   {
@@ -63,10 +63,10 @@ const faqs: { question: string; answer: string; category: Category }[] = [
     category: "Security",
   },
   {
-    question: "Are withdrawals reviewed manually?",
+    question: "Can I use BYT Trading in my own language?",
     answer:
-      "Yes, by default all withdrawal requests are reviewed by our team before funds release, as an additional layer of account protection.",
-    category: "Security",
+      "Yes. Use the language selector at the top of any page, on desktop or mobile. Pages are translated automatically, and your choice stays on as you move around the site.",
+    category: "General",
   },
 ];
 
@@ -143,7 +143,7 @@ export function Faq() {
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">FAQS</p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Frequently Asked Questions</h2>
           <p className="mt-4 max-w-md text-lg leading-relaxed text-muted-foreground lg:leading-loose">
-            Everything you need to know about cycles, deposits, pricing, and account security, organized
+            Everything you need to know about trades, deposits, pricing, and account security, organized
             by topic so you can find your answer fast.
           </p>
         </div>

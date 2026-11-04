@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InvestmentPlan } from '../database/entities';
-import { termToSeconds } from '../investments/term.util';
+import { sortPlans } from './plan-order';
 
 @Injectable()
 export class PlansService {
@@ -11,16 +11,8 @@ export class PlansService {
     private readonly planRepo: Repository<InvestmentPlan>,
   ) {}
 
-  // term is a free-form duration string now, not a sortable column, so the
-  // shortest-cycle-first ordering (open-ended plans last, matching the old
-  // NULLS LAST behavior) is computed in JS after fetching instead.
   async findAllActive() {
-    const plans = await this.planRepo.find({ where: { isActive: true } });
-    return plans.sort((a, b) => {
-      const aSeconds = a.term == null ? Infinity : termToSeconds(a.term);
-      const bSeconds = b.term == null ? Infinity : termToSeconds(b.term);
-      return aSeconds - bSeconds;
-    });
+    return sortPlans(await this.planRepo.find({ where: { isActive: true } }));
   }
 
   async findBySlug(slug: string) {

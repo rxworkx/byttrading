@@ -13,8 +13,8 @@ export function TradingBots() {
         <p className="text-sm font-semibold tracking-wide text-primary uppercase">Our bots</p>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Meet the trading bots</h2>
         <p className="mt-4 text-lg text-muted-foreground">
-          Each bot runs a fixed length trading cycle with its own risk profile. Subscribe once, fund a
-          trade, and let the cycle run its course while you track progress from your dashboard.
+          Each bot runs its own strategy with its own risk profile. Subscribe once, fund a trade, and
+          track progress from your dashboard.
         </p>
       </div>
 

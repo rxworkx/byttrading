@@ -35,8 +35,8 @@ export default function RiskDisclosurePage() {
 
       <h2>4. Platform &amp; operational risk</h2>
       <p>
-        As with any software platform, technical issues, third party service interruptions (including
-        price data providers), or delays in manual review of deposits and withdrawals may affect the
+        As with any software platform, technical issues or third party service interruptions (including
+        price data providers) may affect the
         timing of fund availability.
       </p>
 

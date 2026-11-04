@@ -3,6 +3,7 @@ import { Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { TranslateLoader } from "@/components/layout/language-switcher";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -18,7 +19,7 @@ const systemSansStack =
 export const metadata: Metadata = {
   title: "BYT Trading | AI Trading Bots for Crypto Investors",
   description:
-    "BYT Trading pairs your capital with AetherGuard, QuantumPulse, and TitanForge, automated trading bots that run fixed cycle strategies on your behalf.",
+    "BYT Trading pairs your capital with AetherGuard, QuantumPulse, and TitanForge, automated trading bots that trade on your behalf.",
   icons: [
     { rel: "icon", url: "/favicon.png" },
     { rel: "apple-touch-icon", url: "/favicon.png" },
@@ -37,6 +38,7 @@ export default function RootLayout({
       style={{ ["--font-sans" as string]: systemSansStack }}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <TranslateLoader />
         <TooltipProvider>
           {children}
           <Toaster richColors position="top-right" theme="dark" />

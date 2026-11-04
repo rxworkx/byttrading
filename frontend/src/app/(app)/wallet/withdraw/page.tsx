@@ -56,7 +56,7 @@ export default function WithdrawPage() {
     setSubmitting(true);
     try {
       const tx = await walletsApi.withdraw(symbol, amount, destinationAddress);
-      toast.success("Withdrawal requested. It is now pending admin review.");
+      toast.success("Withdrawal requested.");
       router.push(`/transactions/detail?id=${tx.id}`);
     } catch (error) {
       toast.error(error instanceof ApiError ? error.message : "Withdrawal failed");
@@ -69,7 +69,7 @@ export default function WithdrawPage() {
     <div className="mx-auto max-w-md">
       <h1 className="text-2xl font-semibold">Withdraw</h1>
       <p className="mt-1 text-base text-muted-foreground">
-        Withdrawals are reviewed by our team before funds are released.
+        Send funds from your wallet to an external address.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">

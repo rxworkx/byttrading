@@ -35,6 +35,8 @@ import { CreateManualTransactionDto } from './dto/create-manual-transaction.dto'
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
+import { SQLITE_DRIVER } from '../database/sqlite-compat';
+import { sortPlans } from '../plans/plan-order';
 
 @Injectable()
 export class AdminService {
@@ -185,13 +187,21 @@ export class AdminService {
       this.investmentRepo.find({
         where: { startDate: MoreThanOrEqual(since) },
       }),
-      this.investmentRepo.query(
-        `SELECT (elem->>'amount')::numeric AS amount,
-                (elem->>'accrualDate')::timestamptz AS "accrualDate"
-         FROM investments, jsonb_array_elements(accruals) elem
-         WHERE (elem->>'accrualDate')::timestamptz >= $1`,
-        [since],
-      ) as Promise<{ amount: string; accrualDate: Date }[]>,
+      (this.investmentRepo.manager.connection.options.type === SQLITE_DRIVER
+        ? this.investmentRepo.query(
+            `SELECT json_extract(elem.value, '$.amount') AS amount,
+                    json_extract(elem.value, '$.accrualDate') AS "accrualDate"
+             FROM investments, json_each(accruals) elem
+             WHERE julianday(json_extract(elem.value, '$.accrualDate')) >= julianday(?)`,
+            [since.toISOString()],
+          )
+        : this.investmentRepo.query(
+            `SELECT (elem->>'amount')::numeric AS amount,
+                    (elem->>'accrualDate')::timestamptz AS "accrualDate"
+             FROM investments, jsonb_array_elements(accruals) elem
+             WHERE (elem->>'accrualDate')::timestamptz >= $1`,
+            [since],
+          )) as Promise<{ amount: string; accrualDate: Date }[]>,
     ]);
 
     const series: {
@@ -922,8 +932,8 @@ export class AdminService {
     await this.transactionsService.remove(id);
   }
 
-  listAllPlans() {
-    return this.planRepo.find({ order: { createdAt: 'ASC' } });
+  async listAllPlans() {
+    return sortPlans(await this.planRepo.find());
   }
 
   async updatePlan(id: string, updates: UpdatePlanDto) {

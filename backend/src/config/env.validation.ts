@@ -5,12 +5,24 @@ import {
   IsOptional,
   IsString,
   Min,
+  ValidateIf,
   validateSync,
 } from 'class-validator';
 
 class EnvironmentVariables {
+  // Postgres unless explicitly set, so a deployment that doesn't set this keeps
+  // using DATABASE_URL.
+  @IsOptional()
+  @IsIn(['postgres', 'sqlite'])
+  DATABASE_DRIVER?: 'postgres' | 'sqlite';
+
+  @IsOptional()
   @IsString()
-  DATABASE_URL: string;
+  SQLITE_PATH?: string;
+
+  @ValidateIf((env: EnvironmentVariables) => env.DATABASE_DRIVER !== 'sqlite')
+  @IsString()
+  DATABASE_URL?: string;
 
   // The running app's connection, kept separate from DATABASE_URL because
   // migrations (data-source.ts) need Supavisor's session mode (advisory

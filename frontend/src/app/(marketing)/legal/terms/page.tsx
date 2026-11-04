@@ -29,8 +29,8 @@ export default function TermsPage() {
 
       <h2>3. Wallets, deposits &amp; withdrawals</h2>
       <p>
-        Deposits are credited to your wallet only after review and confirmation. Withdrawal requests may
-        be subject to admin approval, minimum amounts, and KYC verification before funds are released.
+        Deposits are credited to your wallet once they are confirmed. Withdrawal requests may be subject
+        to minimum amounts and KYC verification before funds are released.
       </p>
 
       <h2>4. Subscriptions &amp; trade cycles</h2>
@@ -51,8 +51,7 @@ export default function TermsPage() {
       <h2>6. Termination</h2>
       <p>
         We may suspend or terminate accounts that violate these Terms, subject to applicable law. On
-        termination, available balances that are not locked in a trade remain withdrawable subject to
-        standard review.
+        termination, available balances that are not locked in a trade remain withdrawable under these Terms.
       </p>
 
       <h2>7. Limitation of liability</h2>

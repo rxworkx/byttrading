@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <h2>2. How we use your information</h2>
       <ul>
         <li>To create and secure your account, including email verification and 2FA.</li>
-        <li>To process deposits, withdrawals, and trade cycles.</li>
+        <li>To carry out deposits, withdrawals, and trades.</li>
         <li>To detect and prevent fraud or unauthorized account access.</li>
         <li>To comply with applicable legal and regulatory obligations.</li>
       </ul>
