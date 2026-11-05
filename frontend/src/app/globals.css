@@ -332,6 +332,21 @@
   background: #2b2b2b;
   color: #fff;
 }
+@media (max-width: 767.98px) {
+  .byt-translate {
+    width: 144px;
+    height: 23px;
+    margin-top: 0.25px;
+  }
+  .byt-translate .goog-te-gadget > div {
+    height: 23px;
+  }
+  .byt-translate .goog-te-combo {
+    width: 144px;
+    height: 23px;
+    line-height: 23px;
+  }
+}
 body > .skiptranslate,
 iframe.goog-te-banner-frame,
 #goog-gt-tt,

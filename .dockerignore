@@ -1,0 +1,17 @@
+# Secrets and customer data must never reach an image
+**/.env
+**/.env.*
+backend/data
+backups
+prd
+
+**/node_modules
+**/dist
+**/.next
+**/out
+**/*.tsbuildinfo
+.git
+.claude
+.vscode
+*.md
+docker-compose*.yml

@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 const pillars = [
   {
     icon: Zap,
-    title: "Automated cycle engine",
+    title: "Atomic transaction processing",
     description:
-      "A scheduled job tracks every active trade, applies profit accrual within the bot's published rate range, and releases principal plus profit the moment a cycle completes, with no manual intervention required.",
+      "Every deposit, trade, and withdrawal updates your wallet and your transaction history as one single step, so your balance and your records always tell the same story.",
     span: "lg:col-span-7",
     featured: true,
   },
@@ -62,9 +62,9 @@ const dataFlow = [
   },
   {
     step: "03",
-    title: "The cycle engine takes over, if relevant",
+    title: "Trade funds are locked, if relevant",
     description:
-      "For trades, a scheduled job owns the lock and release logic end to end. No admin has to remember to run anything for your cycle to complete on time.",
+      "For trades, the amount leaves your spendable balance and is held against that trade until its cycle ends, then principal plus profit return to the same wallet.",
   },
   {
     step: "04",

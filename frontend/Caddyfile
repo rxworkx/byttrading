@@ -1,0 +1,9 @@
+# The default. Caddy owns ports 80 and 443, and gets and renews the HTTPS
+# certificates for these domains by itself.
+{$SITE_DOMAIN} {
+	import site.caddy
+}
+
+{$REDIRECT_DOMAIN} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}

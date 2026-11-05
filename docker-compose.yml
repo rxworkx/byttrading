@@ -1,0 +1,91 @@
+name: byttrading
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+
+x-backend-env: &backend-env
+  NODE_ENV: production
+  DATABASE_DRIVER: sqlite
+  SQLITE_PATH: /data/byttrading.sqlite
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: byttrading-web
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+      REDIRECT_DOMAIN: ${REDIRECT_DOMAIN:?set REDIRECT_DOMAIN in .env}
+    volumes:
+      # Holds the HTTPS certificates. Losing it risks Let's Encrypt rate limits.
+      - caddy-data:/data
+      - caddy-config:/config
+    logging: *logging
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: byttrading-backend
+    restart: unless-stopped
+    # Forwards stop signals to node, so `docker compose stop` isn't a 10s wait.
+    init: true
+    env_file: .env
+    environment:
+      <<: *backend-env
+      PORT: 4000
+      FRONTEND_URL: https://${SITE_DOMAIN}
+    volumes:
+      - app-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://localhost:4000/api/health').then((r)=>process.exit(r.ok?0:1),()=>process.exit(1))
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging: *logging
+
+  # Copies the database once a day. These copies are on the same disk as the
+  # database: see the README for sending them to another machine.
+  backup:
+    image: byttrading-backend
+    restart: unless-stopped
+    init: true
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      <<: *backend-env
+      SQLITE_BACKUP_DIR: /backups
+      SQLITE_BACKUP_KEEP: ${SQLITE_BACKUP_KEEP:-14}
+    command:
+      - sh
+      - -c
+      - while true; do node dist/database/backup.js; sleep 86400; done
+    volumes:
+      - app-data:/data
+      - backups:/backups
+    logging: *logging
+
+volumes:
+  # The customer database. `docker compose down -v` deletes this: never use -v.
+  app-data:
+  backups:
+  caddy-data:
+  caddy-config:

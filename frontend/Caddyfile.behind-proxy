@@ -1,0 +1,14 @@
+# Used by docker-compose.behind-proxy.yml, when another web server on the machine
+# holds ports 80 and 443 and handles HTTPS.
+{
+	auto_https off
+	servers {
+		# Keep the visitor's address from that server, so the backend's rate
+		# limits apply per visitor and not to everyone as one client.
+		trusted_proxies static private_ranges
+	}
+}
+
+:80 {
+	import site.caddy
+}
