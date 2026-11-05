@@ -105,7 +105,7 @@ export function Navbar() {
               </Button>
             }
           />
-          <SheetContent side="right" className="w-80">
+          <SheetContent side="right" className="w-80 pt-9 [&>[data-slot=sheet-close]]:top-12">
             <SheetHeader>
               <SheetTitle>
                 <Logo href={null} size="sm" wordmark={false} />

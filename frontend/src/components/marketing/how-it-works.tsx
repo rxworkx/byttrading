@@ -9,15 +9,15 @@ const steps = [
   },
   {
     step: "02",
-    title: "Deposit into your wallet",
-    description:
-      "Send crypto to your personal deposit address, or buy crypto directly through our on ramp partner if you are starting from scratch. Once confirmed, it lands in your wallet balance.",
-  },
-  {
-    step: "03",
     title: "Subscribe to a bot",
     description:
       "Choose AetherGuard, QuantumPulse, or TitanForge based on the risk profile that suits you, then pick a 6 month or 1 year subscription term.",
+  },
+  {
+    step: "03",
+    title: "Deposit into your wallet",
+    description:
+      "Send crypto to your personal deposit address, or buy crypto directly through our on ramp partner if you are starting from scratch. Once confirmed, it lands in your wallet balance.",
   },
   {
     step: "04",

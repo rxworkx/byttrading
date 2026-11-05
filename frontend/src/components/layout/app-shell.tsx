@@ -120,7 +120,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Button variant="ghost" size="icon-lg" className="md:hidden" onClick={() => setDrawerOpen(true)}>
                   <Menu className="size-6" />
                 </Button>
-                <SheetContent side="right" className="w-80 gap-0 p-0">
+                <SheetContent side="right" className="w-80 gap-0 p-0 pt-9 [&>[data-slot=sheet-close]]:top-12">
                   <SheetHeader className="border-b border-hairline px-5 py-6">
                     <SheetTitle>
                       <Logo href={null} size="sm" />

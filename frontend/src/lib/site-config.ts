@@ -3,14 +3,13 @@ export const siteConfig = {
   abn: "49674828034",
   abnUrl: "https://abr.business.gov.au/ABN/View?abn=49674828034",
   supportEmail: "support@byttrading.com",
-  supportWhatsapp: "https://wa.me/000000000000",
+  supportWhatsapp: "https://wa.me/61480044620",
   address: "Level 12, 123 Collins Street, Melbourne VIC 3000, Australia",
   buyCryptoUrl: "https://www.moonpay.com/buy",
 };
 
 export const socialLinks = [
   { label: "WhatsApp", href: siteConfig.supportWhatsapp },
-  { label: "Telegram", href: "https://t.me/byttrading" },
 ];
 
 export const mainNav = [
@@ -34,6 +33,7 @@ export const footerNav = {
     { label: "Risk Disclosure", href: "/legal/risk-disclosure" },
     { label: "Regulatory Status", href: "/legal/regulatory-status" },
     { label: "Company Registration", href: "/legal/company-registration" },
+    { label: "Company Overview (PDF)", href: "/documents/BYT_Trading_Company_Profile.pdf", newTab: true },
   ],
 };
 

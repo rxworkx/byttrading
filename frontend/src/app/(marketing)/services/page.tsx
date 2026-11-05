@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Activity, Bot, Mail, MessageCircle, Repeat, Wallet, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -140,7 +141,7 @@ export default function ServicesPage() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-hairline px-5 py-3 text-base font-medium whitespace-nowrap hover:bg-background/60"
             >
-              <MessageCircle className="size-4" /> Chat on WhatsApp
+              <Image src="/images/brand/whatsapp.png" alt="" width={20} height={20} className="size-5" /> Chat on WhatsApp
             </Link>
           </div>
         </div>

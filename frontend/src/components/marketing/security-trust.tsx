@@ -50,7 +50,7 @@ export function SecurityTrust() {
               <h3 className="mt-5 text-xl font-semibold">Registered company</h3>
               <p className="mt-3 text-base text-white/80">
                 BYT Trading operates under a verified Australian Business Number. Check it independently
-                any time, or read our company overview for a plain summary of what we do.
+                any time, or read our company registration document.
               </p>
               <dl className="mt-6 border-t border-white/10 pt-6">
                 <dt className="text-xs text-white/60">Company registration (ABN)</dt>
@@ -71,7 +71,7 @@ export function SecurityTrust() {
                   rel="noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-lg brand-gradient px-5 py-3 text-base font-medium text-background hover:opacity-90"
                 >
-                  Company Overview (PDF) <FileText className="size-4" />
+                  Company Registration (PDF) <FileText className="size-4" />
                 </Link>
               </div>
             </div>
