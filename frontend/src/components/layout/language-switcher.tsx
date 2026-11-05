@@ -1,47 +1,58 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
-// Google's widget owns its own DOM, so it lives in one element created outside
-// React. Headers borrow that element while they are on screen. It stays loaded
-// on pages without a header, so a chosen language carries across the whole site.
-const SCRIPT_URL = "https://translate.google.com/translate_a/element.js?cb=bytTranslateInit";
+// GTranslate's floating widget owns its own DOM, so it lives in one element
+// created outside React. It stays loaded on every page, so a chosen language
+// carries across the whole site.
+const SCRIPT_URL = "https://cdn.gtranslate.net/widgets/latest/float.js";
+
+const SETTINGS = {
+  default_language: "en",
+  languages: ["af", "sq", "am", "ar", "hy", "az", "eu", "be", "bn", "bs", "bg", "ca", "ceb", "ny", "zh-CN", "zh-TW", "co", "hr", "cs", "da", "nl", "en", "eo", "et", "tl", "fi", "fr", "fy", "gl", "ka", "de", "el", "gu", "ht", "ha", "haw", "iw", "hi", "hmn", "hu", "is", "ig", "id", "ga", "it", "ja", "jw", "kn", "kk", "km", "ko", "ku", "ky", "lo", "la", "lv", "lt", "lb", "mk", "mg", "ms", "ml", "mt", "mi", "mr", "mn", "my", "ne", "no", "ps", "fa", "pl", "pt", "pa", "ro", "ru", "sm", "gd", "sr", "st", "sn", "sd", "si", "sk", "sl", "so", "es", "su", "sw", "sv", "tg", "ta", "te", "th", "tr", "uk", "ur", "uz", "vi", "cy", "xh", "yi", "yo", "zu"],
+  url_structure: "none",
+  flag_style: "2d",
+  flag_size: 16,
+  wrapper_selector: ".gtranslate_wrapper",
+  native_language_names: true,
+  detect_browser_language: true,
+  switcher_open_direction: "top",
+  switcher_horizontal_position: "right",
+  switcher_vertical_position: "top",
+  switcher_text_color: "#666",
+  switcher_arrow_color: "#666",
+  switcher_border_color: "#ccc",
+  switcher_background_color: "#fff",
+  switcher_background_shadow_color: "#efefef",
+  switcher_background_hover_color: "#fff",
+  dropdown_text_color: "#000",
+  dropdown_hover_color: "#fff",
+  dropdown_background_color: "#eee"
+};
 
 declare global {
   interface Window {
-    bytTranslateInit?: () => void;
-    google?: {
-      translate: {
-        TranslateElement: new (options: { pageLanguage: string; autoDisplay: boolean }, id: string) => unknown;
-      };
-    };
+    gtranslateSettings?: typeof SETTINGS;
   }
 }
 
-let host: HTMLDivElement | null = null;
-let parking: HTMLDivElement | null = null;
+let loaded = false;
 
-function ensureWidget() {
-  if (host && parking) return { host, parking };
-
-  parking = document.createElement("div");
-  parking.setAttribute("aria-hidden", "true");
-  parking.style.cssText = "position:fixed;left:-9999px;top:0;";
-  host = document.createElement("div");
-  host.id = "byt-translate-host";
-  parking.appendChild(host);
-  document.body.appendChild(parking);
+function loadWidget() {
+  if (loaded) return;
+  loaded = true;
 
   tolerateTranslatedDom();
-  window.bytTranslateInit = () => {
-    new window.google!.translate.TranslateElement({ pageLanguage: "en", autoDisplay: false }, "byt-translate-host");
-  };
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "gtranslate_wrapper notranslate";
+  document.body.appendChild(wrapper);
+
+  window.gtranslateSettings = SETTINGS;
   const script = document.createElement("script");
   script.src = SCRIPT_URL;
-  script.async = true;
+  script.defer = true;
   document.body.appendChild(script);
-
-  return { host, parking };
 }
 
 // Translating moves text into new elements, so React can later try to remove a
@@ -62,24 +73,7 @@ function tolerateTranslatedDom() {
 /** Rendered once in the root layout, so the widget is available on every page. */
 export function TranslateLoader() {
   useEffect(() => {
-    ensureWidget();
+    loadWidget();
   }, []);
   return null;
-}
-
-/** Positioned by the header, and takes no space in its layout. */
-export function LanguageSwitcher({ className }: { className?: string }) {
-  const slot = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const element = slot.current;
-    if (!element) return;
-    const widget = ensureWidget();
-    element.appendChild(widget.host);
-    return () => {
-      if (widget.host.parentElement === element) widget.parking.appendChild(widget.host);
-    };
-  }, []);
-
-  return <div ref={slot} className={`byt-translate notranslate z-10 h-5 w-[132px] ${className ?? ""}`} />;
 }

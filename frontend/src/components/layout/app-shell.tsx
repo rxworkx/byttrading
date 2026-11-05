@@ -14,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Logo } from "@/components/layout/logo";
-import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { AccountNav } from "@/components/layout/account-nav";
 import { mobileQuickNav } from "@/lib/account-nav";
 import { getMe, logout, type PublicUser } from "@/lib/auth-client";
@@ -61,7 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-h-screen flex-1 flex-col">
         <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur">
-          <div className="relative flex h-[76px] items-center justify-between px-4 sm:px-6 md:h-16 md:px-8">
+          <div className="relative flex h-[76px] items-center justify-between px-4 pt-6 sm:px-6 md:h-16 md:px-8 md:pt-0 md:pr-[112px]">
             <Logo size="sm" className="md:hidden" />
 
             <div className="hidden md:block">
@@ -143,9 +142,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </SheetContent>
               </Sheet>
             </div>
-
-            {/* Takes no space. Above the icons on mobile, just left of them on desktop. */}
-            <LanguageSwitcher className="absolute top-0.5 right-4 sm:right-6 md:top-1/2 md:right-[138px] md:-translate-y-1/2" />
           </div>
         </header>
 
